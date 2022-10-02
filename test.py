@@ -1,83 +1,28 @@
-
-import io
-from operator import le
-import selectors
-import threading
-import time
-
-# t = time.time()
-
-
-# def loopp(h):
-#     for i in range(100):
-#         print(i)
-#         time.sleep(1)
-
-
-# def looppp():
-#     for i in range(100, 200):
-#         print(i)
-#         time.sleep(5)
-
-
-# t1 = threading.Thread(target=loopp, args=(10,))
-# t2 = threading.Thread(target=looppp)
-# t1.start()
-# t2.start()
-
-# print("time"+str(time.time() - t))
-import requests
-from async_timeout import timeout
-from selenium.webdriver.common.proxy import Proxy, ProxyType
+# skipped your comments for readability
 import smtplib
-import threading
-from optparse import *
-import time
-from os import *
-import sys
-import io
-from selenium import webdriver
-from webdriver_manager.firefox import GeckoDriverManager
-from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.options import Options
-import selenium.common.exceptions
-import requests
-from colorama import Fore, Back, Style
-from selenium.webdriver.support.select import Select
-# proxy = Proxy()
-# proxy.proxy_type = ProxyType.MANUAL
-# proxy.http_proxy = '200.82.188.26:999'
-# proxy.ssl_proxy = '200.82.188.26:999'
-# capabilities = webdriver.DesiredCapabilities.FIREFOX
-# proxy.add_to_capabilities(capabilities)
-# brows = webdriver.Firefox()
-# brows.get('https://biztime.com.vn/')
-# path_update_time = "//div[@id='content']/div[2]/span"
-# driver = webdriver.Firefox()
-# driver.get("http://www.cybersyndrome.net/plr6.html")
-# driver.find_element(By.XPATH,
-#                     path_update_time).text
-# 108.166.183.204:80
-#!/usr/bin/env python3
-# proxy = Proxy()
-# proxy.proxy_type = ProxyType.MANUAL
-# proxy.http_proxy = "41.186.44.106:3128"
-# proxy.ssl_proxy = "41.186.44.106:3128"
-# capabilities = webdriver.DesiredCapabilities.FIREFOX
-# proxy.add_to_capabilities(capabilities)
-# driver = webdriver.Firefox()
-# driver.get("https://api.ipify.org/")
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
-# driver.get("https://api.ipify.org/")
+me = "pk4824829@gmail.com"
+my_password = r"xgevlqrasamvxqwb"
+you = "pk4824829@gmail.com"
 
+msg = MIMEMultipart('alternative')
+msg['Subject'] = "Alert"
+msg['From'] = me
+msg['To'] = you
 
-driver = webdriver.Firefox()
+html = '<html><body><p>Hi, I have the following alerts for you!</p></body></html>'
+part2 = MIMEText(html, 'html')
 
-driver.get("https://spys.me/socks.txt")
+msg.attach(part2)
 
-lit = driver.find_element(
-    By.XPATH, "//body/pre").text.split("\n")
-prx = []
-for i in range(6, len(lit)-2):
-    prx.append(lit[i].split(" ")[0])
-print(prx)
+# Send the message via gmail's regular server, over SSL - passwords are being sent, afterall
+s = smtplib.SMTP_SSL('smtp.gmail.com')
+# uncomment if interested in the actual smtp conversation
+# s.set_debuglevel(1)
+# do the smtp auth; sends ehlo if it hasn't been sent already
+s.login(me, my_password)
+
+s.sendmail(me, you, msg.as_string())
+s.quit()
