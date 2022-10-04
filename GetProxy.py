@@ -22,20 +22,21 @@ try:
 except:
     os.system("pip install colorama")
 url_list = ['https://www.facebook.com/login', 'https://www.youtube.com/',
-            'https://www.instagram.com', 'https://www.tiktok.com/login/phone-or-email/email', 'https://twitter.com/i/flow/login', 'https://www.gapo.vn/', 'https://biztime.com.vn/', 'https://accounts.hahalolo.com/sign-in/']
+            'https://www.instagram.com', 'https://www.tiktok.com/login/phone-or-email/email', 'https://twitter.com/i/flow/login', 'https://www.gapo.vn/', 'https://biztime.com.vn/', 'https://accounts.hahalolo.com/sign-in/', 'https://identity.flickr.com/login', 'https://www.tumblr.com/login']
 social_name = ['facebook', 'youtube', 'instagram',
-               'tiktok', 'twitter', 'gapo', 'biztime', 'hahalolo']
+               'tiktok', 'twitter', 'gapo', 'biztime', 'hahalolo', 'flickr', 'tumblr']
 # ===============================Get Proxy List============================
 
 
 def getProxies(getProxies, type):
+    index_type = []
     if type != None:
         types = str(type).split("|")
-        index_type = []
         for t in types:
             index_type.append(social_name.index(t))
     else:
-        index_type = [0, 1, 2, 3, 4, 5, 6, 7]
+        for i in range(0, len(url_list)):
+            index_type.append(i)
     # -------------------------------------------------------
     proxy = Proxy()
     proxy.proxy_type = ProxyType.MANUAL
@@ -429,6 +430,9 @@ def check_proxy(myproxy, index_type, getProxies):
                              proxies={'https': myproxy, 'http': myproxy}, timeout=1)
                 io.open(getProxies, "w").write(
                     social_name[s]+"-"+myproxy+","+get_str)
+                print(Fore.LIGHTGREEN_EX+"[V]"+social_name[s] +
+                      "-"+myproxy+Fore.RESET)
+            else:
                 print(Fore.LIGHTGREEN_EX+"[V]"+social_name[s] +
                       "-"+myproxy+Fore.RESET)
         except:

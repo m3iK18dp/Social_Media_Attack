@@ -17,6 +17,7 @@ from selenium.webdriver.common.by import By
 import selenium.common.exceptions
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.keys import Keys
 try:
     import requests
 except:
@@ -40,3 +41,26 @@ os.system('taskkill /f /im firefox.exe')
 #     By.XPATH, "//div[@id='app']/div/div/div/div/div[2]/div/div/div/div[2]").click()
 # time.sleep(2)
 # print(browser.find_element_by_tag_name('html').id)
+# def send_keys(element, key):
+#     for s in list(key):
+#         element.send_keys(s)
+#         time.sleep(0.01)
+
+
+# brows = webdriver.Firefox()
+# brows.set_window_size(960, 540)
+# brows.set_page_load_timeout(30)
+# brows.implicitly_wait(5)
+# brows.get("https://identity.flickr.com/login")
+# send_keys(brows.find_element(
+#     By.XPATH, "//input[@id='login-email']"), 'pk4824829@gmail.com')
+# brows.find_element(
+#     By.XPATH, "//form/button").click()
+# time.sleep(2)
+# send_keys(brows.find_element(
+#     By.XPATH, "//input[@id='login-password']"), '123456789')
+# brows.find_element(
+#     By.XPATH, "//form/button").click()
+# time.sleep(2)
+# brows.find_element(
+#     By.XPATH, "//input[@id='login-password']").send_keys(Keys.SHIFT, Keys.HOME, Keys.BACKSPACE)
