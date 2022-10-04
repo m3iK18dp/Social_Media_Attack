@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from selenium.webdriver.common.action_chains import ActionChains
 import smtplib
 import threading
 from optparse import *
@@ -27,8 +28,8 @@ try:
 except:
     os.system("pip install colorama")
 import os
-os.system('taskkill /f /im geckodriver.exe')
-os.system('taskkill /f /im firefox.exe')
+# os.system('taskkill /f /im geckodriver.exe')
+# os.system('taskkill /f /im firefox.exe')
 
 
 # browser = webdriver.Firefox()
@@ -64,3 +65,23 @@ os.system('taskkill /f /im firefox.exe')
 # time.sleep(2)
 # brows.find_element(
 #     By.XPATH, "//input[@id='login-password']").send_keys(Keys.SHIFT, Keys.HOME, Keys.BACKSPACE)
+# try:
+driver = webdriver.Firefox()
+driver.implicitly_wait(5)
+driver.set_page_load_timeout(120)
+driver.get("https://myspace.com/signup")
+button = driver.find_element(
+    By.XPATH, "//button[@class='emaillogin massive']").send_keys(Keys.ENTER)
+driver.find_element(
+    By.XPATH, "//input[@id='signupEmailEmail']").send_keys("pk4824829@gmail.com")
+driver.find_element(
+    By.XPATH, "//input[@id='signupEmailPassword']").send_keys("pk4824829@gmail.com")
+time.sleep(2)
+driver.implicitly_wait(15)
+if "This email address was already used to create an account. Try using another" in driver.find_element(By.XPATH, "//input[@id='signupEmailEmail']/../p/div/div[2]").text:
+    print("1")
+# except:
+#     print
+# finally:
+driver.quit()
+print("2")

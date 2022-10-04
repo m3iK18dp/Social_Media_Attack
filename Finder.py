@@ -7,6 +7,7 @@ import time
 import sys
 import io
 import os
+from turtle import st
 try:
     from selenium import webdriver
 except:
@@ -34,31 +35,46 @@ def search_social_media_from_gmail(gmail):
     #                  [instagram, False, 'Instagram', None, False],
     #                  [tiktok, False, 'Tiktok', None, False],
     #                  [twitter, False, 'Twitter', None, False],
-    #                  [youtube, False, 'Youtube', None, False]
-    # [hahalolo, False, 'Hahalolo', None, False],
+    #                  [youtube, False, 'Youtube', None, False],
+    #                  [hahalolo, False, 'Hahalolo', None, False],
     #                  [biztime, False, 'Biztime', None, False],
     #                  [flickr, False, 'Flickr', None, False],
     #                  [tumblr, False, 'Tumblr', None, False],
     #                  [snapchat, False, 'Snapchat', None, False],
-    #                  [pinterest, False, 'pinterest', None, False]]
-    social_medias = [[myspace, False, 'myspace', None, False]]
+    #                  [pinterest, False, 'pinterest', None, False],
+    #                  [zoimas, False, 'Zoimas', None, False],
+    #                  [befilo, False, 'Befilo', None, False],
+    #                  [opportunity, False, 'Opportunity', None, False],
+    #                  [flipboard, False, 'Flipboard', None, False],
+    #                  [xing, False, 'Xing', None, False],
+    #                  [linkedin, False, 'Linkedin', None, False],
+    #                  [desentric, False, 'Desentric', None, False],
+    #                  [quora, False, 'Quora', None, False]]
+
+    # [reddit, False, 'Reddit', None, False]
+    # [myspace, False, 'Myspace', None, False]
+    #
+    social_medias = [[hahalolo, False, 'Hahalolo', None, False]]
     ops = Options()
     ops.headless = True
     for social_media in social_medias:
         threading.Thread(
             target=social_media[0], args=(ops, gmail, social_media), name=social_media[2], daemon=True).start()
+    str = gmail
     while len(social_medias) != 0:
         for social_media in social_medias:
             sm = social_media
-            print(sm)
+            # print(sm)
             if sm[4]:
                 if social_media[1]:
+                    str += "-"+(social_media[2].lower())
                     print(Fore.LIGHTGREEN_EX+"[V] " +
                           social_media[2] + Fore.RESET)
                 if social_media[3] != None:
                     social_media[3].quit()
                 social_medias.remove(social_media)
         time.sleep(0.5)
+    io.open("finder_list.txt", "a").write(str)
 
 
 def facebook(ops, gmail, social_media):
@@ -66,7 +82,7 @@ def facebook(ops, gmail, social_media):
         driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
+        driver.set_page_load_timeout(60)
         driver.get("https://www.facebook.com/login")
         driver.find_element(
             By.XPATH, "//input[@id='email']").send_keys(gmail)
@@ -86,7 +102,7 @@ def instagram(ops, gmail, social_media):
         driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
+        driver.set_page_load_timeout(60)
         driver.get("https://www.instagram.com/")
         driver.find_element(
             By.XPATH, '//*[@id="loginForm"]/div/div/div/label/input').send_keys(gmail)
@@ -109,7 +125,7 @@ def tiktok(ops, gmail, social_media):
         driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
+        driver.set_page_load_timeout(60)
         driver.get("https://www.tiktok.com/login/email/forget-password")
         driver.find_element(
             By.XPATH, "//input[@name='email']").send_keys(gmail)
@@ -117,7 +133,7 @@ def tiktok(ops, gmail, social_media):
             By.XPATH, "//button[@type='button']").click()
         try:
             driver.find_element(By.XPATH, "//form/div[3]/div[2]")
-        except:
+        except selenium.common.exceptions.NoSuchElementException:
             social_media[1] = True
     except:
         print
@@ -131,7 +147,7 @@ def twitter(ops, gmail, social_media):
         driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
+        driver.set_page_load_timeout(60)
         driver.get("https://twitter.com/i/flow/signup")
         driver.find_element(By.XPATH, "//div[5]").click()
         driver.find_element(By.XPATH, "//div[2]/div/div/div[2]/div[3]").click()
@@ -148,43 +164,28 @@ def twitter(ops, gmail, social_media):
 
 
 def youtube(ops, gmail, social_media):
-    try:
-        driver = webdriver.Firefox(options=ops)
-        social_media[3] = driver
-        driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
-        driver.get("https://accounts.google.com/ServiceLogin")
-        driver.find_element(
-            By.XPATH, "//input[@id='identifierId']").send_keys(gmail)
-        driver.find_element(
-            By.XPATH, "//button[@id='identifierNext']").click()
-        try:
-            driver.find_element(
-                By.XPATH, "//section/div/div/div[1]/div/div[2]/div/div")
-        except:
-            social_media[1] = True
-    except:
-        print
-    finally:
-        driver.quit()
-        social_media[4] = True
+    time.sleep(5)
+    social_media[1] = True
+    social_media[4] = True
 
 
 def hahalolo(ops, gmail, social_media):
     try:
-        driver = webdriver.Firefox(options=ops)
+        driver = webdriver.Firefox()
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
+        driver.set_page_load_timeout(60)
         driver.get("https://accounts.hahalolo.com/forgot-password/")
+        driver.find_element(
+            By.XPATH, "//input[@name='phoneOrEmail']/..").click()
         driver.find_element(
             By.XPATH, "//input[@name='phoneOrEmail']").send_keys(gmail)
         driver.find_element(
-            By.XPATH, "//button[@class='MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-fullWidth']").click()
+            By.XPATH, "(//button)[1]").click()
         driver.find_element(
             By.XPATH, "//span[normalize-space()='Xác minh tài khoản']")
         social_media[1] = True
-    except:
+    except selenium.common.exceptions.NoSuchElementException:
         print
     finally:
         driver.quit()
@@ -196,17 +197,16 @@ def biztime(ops, gmail, social_media):
         driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
+        driver.set_page_load_timeout(60)
         driver.get("https://biztime.com.vn/forgot-password")
         driver.find_element(
             By.XPATH, "//input[@name='recoveremail']").send_keys(gmail)
         driver.find_element(
             By.XPATH, "//form[@id='forgot-form']//button[@type='submit'][contains(text(),'Khôi phục')]").click()
-        driver.implicitly_wait(15)
         driver.find_element(
             By.XPATH, "//div[@class='valign tag_auth_animation']")
         social_media[1] = True
-    except:
+    except selenium.common.exceptions.NoSuchElementException:
         print
     finally:
         driver.quit()
@@ -218,17 +218,16 @@ def flickr(ops, gmail, social_media):
         driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
+        driver.set_page_load_timeout(60)
         driver.get("https://identity.flickr.com/forgot-password")
         driver.find_element(
             By.XPATH, "//input[@id='forgot-password-email']").send_keys(gmail)
         driver.find_element(
             By.XPATH, "//form//button").click()
-        driver.implicitly_wait(15)
         try:
             driver.find_element(
                 By.XPATH, "//form/div[2]/p']")
-        except:
+        except selenium.common.exceptions.NoSuchElementException:
             social_media[1] = True
     except Exception as e:
         print(e)
@@ -241,8 +240,8 @@ def tumblr(ops, gmail, social_media):
     try:
         driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
-        driver.implicitly_wait(15)
-        driver.set_page_load_timeout(120)
+        driver.implicitly_wait(5)
+        driver.set_page_load_timeout(60)
         driver.get("https://www.tumblr.com/register")
         driver.find_element(
             By.XPATH, "//input[@name='email']").send_keys(gmail)
@@ -265,7 +264,7 @@ def tumblr(ops, gmail, social_media):
         try:
             driver.find_element(
                 By.XPATH, "//div[@class='oFCPF']")
-        except:
+        except selenium.common.exceptions.NoSuchElementException:
             social_media[1] = True
     except Exception as e:
         print(e)
@@ -279,7 +278,7 @@ def snapchat(ops, gmail, social_media):
         driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
+        driver.set_page_load_timeout(60)
         driver.get("https://www.linkedin.com/login")
         driver.find_element(
             By.XPATH, "//input[@id='username']").send_keys(gmail)
@@ -287,7 +286,6 @@ def snapchat(ops, gmail, social_media):
             By.XPATH, "//input[@id='password']").send_keys(gmail)
         driver.find_element(
             By.XPATH, "(//form)[2]//button").click()
-        driver.implicitly_wait(15)
         driver.find_element(
             By.XPATH, "//div[@id='organic-otp-link-in-error-message']")
         social_media[1] = True
@@ -303,13 +301,12 @@ def pinterest(ops, gmail, social_media):
         driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
+        driver.set_page_load_timeout(60)
         driver.get("https://www.pinterest.com/login/")
         driver.find_element(
             By.XPATH, "//input[@id='email']").send_keys(gmail)
         driver.find_element(
             By.XPATH, "//form//button").click()
-        driver.implicitly_wait(15)
         driver.find_element(
             By.XPATH, "//span[@id='password-error']")
         social_media[1] = True
@@ -324,16 +321,16 @@ def pinterest(ops, gmail, social_media):
 
 def reddit(ops, gmail, social_media):
     try:
-        driver = webdriver.Firefox(options=ops)
+        driver = webdriver.Firefox()
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
-        driver.get("https://www.pinterest.com/login/")
+        driver.set_page_load_timeout(60)
+        driver.get("https://www.reddit.com/password")
         driver.find_element(
             By.XPATH, "//input[@id='email']").send_keys(gmail)
         driver.find_element(
             By.XPATH, "//form//button").click()
-        driver.implicitly_wait(15)
+        driver.implicitly_wait(10)
         driver.find_element(
             By.XPATH, "//span[@id='password-error']")
         social_media[1] = True
@@ -350,70 +347,71 @@ def myspace(ops, gmail, social_media):
         driver = webdriver.Firefox()
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
-        driver.get("https://myspace.com/signin")
+        driver.set_page_load_timeout(60)
+        driver.get("https://myspace.com/signup")
         driver.find_element(
-            By.XPATH, "//input[@id='login.email']").send_keys(gmail)
+            By.XPATH, "//button[@class='emaillogin massive']").click()
         driver.find_element(
-            By.XPATH, "//input[@id='login.password']").send_keys(" ")
+            By.XPATH, "//input[@id='signupEmailEmail']").send_keys(gmail)
         driver.find_element(
-            By.XPATH, "//button[normalize-space()='Sign In']").click()
-        driver.implicitly_wait(15)
+            By.XPATH, "//input[@id='signupEmailPassword']").send_keys(gmail)
+        time.sleep(2)
+        driver.implicitly_wait(10)
         try:
             driver.find_element(
-                By.XPATH, "//div[contains(text(),'Invalid email and/or password. Please try again.')]")
-        except:
+                By.XPATH, "//input[@id='signupEmailEmail']/../p/div/div[2]")
+        except selenium.common.exceptions.NoSuchElementException:
             social_media[1] = True
     except:
         print
     finally:
         driver.quit()
         social_media[4] = True
-
-# not
 
 
 def linkedin(ops, gmail, social_media):
     try:
-        driver = webdriver.Firefox()
+        driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
-        driver.get("https://www.linkedin.com/login")
+        driver.set_page_load_timeout(60)
+        driver.get(
+            "https://www.linkedin.com/checkpoint/rp/request-password-reset")
         driver.find_element(
-            By.XPATH, "//input[@id='login.email']").send_keys(gmail)
+            By.XPATH, "//input[@id='username']").send_keys(gmail)
         driver.find_element(
-            By.XPATH, "//input[@id='login.password']").send_keys(" ")
-        old_id = driver.find_element_by_tag_name('html').id
-        driver.find_element(
-            By.XPATH, "//button[normalize-space()='Sign In']").click()
-        while driver.find_element_by_tag_name('html').id == old_id:
-            continue
-        if "That's not the right password" in driver.find_element(By.XPATH, "//div[@id='error-for-password']").text:
+            By.XPATH, "//button[@id='reset-password-submit-button']").click()
+        try:
+            driver.find_element(
+                By.XPATH, "//h1[normalize-space()='We sent a code to your email']")
+        except selenium.common.exceptions.NoSuchElementException:
             social_media[1] = True
     except:
         print
     finally:
         driver.quit()
         social_media[4] = True
-# not
 
 
 def desentric(ops, gmail, social_media):
     try:
-        driver = webdriver.Firefox()
+        driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
-        driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
+        driver.implicitly_wait(2)
+        driver.set_page_load_timeout(60)
         driver.get("https://desentric.com//guest?auth=forgot_pass")
+        try:
+            driver.find_element(By.XPATH, "(//button)[2]").click()
+        except:
+            print
+        time.sleep(2)
         driver.find_element(
             By.XPATH, "//input[@name='email']").send_keys(gmail)
         driver.find_element(
             By.XPATH, "//form//button").click()
-        driver.implicitly_wait(15)
         try:
             driver.find_element(By.XPATH, "//form/div/div[2]/div")
-        except:
+        except selenium.common.exceptions.NoSuchElementException:
             social_media[1] = True
     except:
         print
@@ -421,99 +419,88 @@ def desentric(ops, gmail, social_media):
         driver.quit()
         social_media[4] = True
 
-# not
-
 
 def zoimas(ops, gmail, social_media):
     try:
-        driver = webdriver.Firefox()
+        driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
+        driver.set_page_load_timeout(60)
         driver.get("https://zoimas.com//recover")
         driver.find_element(
             By.XPATH, "//input[@name='username']").send_keys(gmail)
         driver.find_element(
             By.XPATH, "//input[@value='Recover']").click()
-        driver.implicitly_wait(15)
         try:
             driver.find_element(
                 By.XPATH, "//p[normalize-space()='We couldn't find the username.']")
-        except:
+        except selenium.common.exceptions.NoSuchElementException:
             social_media[1] = True
     except:
         print
     finally:
         driver.quit()
         social_media[4] = True
-# not
 
 
 def befilo(ops, gmail, social_media):
     try:
-        driver = webdriver.Firefox()
+        driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
+        driver.set_page_load_timeout(60)
         driver.get("https://befilo.com//recover")
         driver.find_element(
             By.XPATH, "//input[@name='username']").send_keys(gmail)
         driver.find_element(
             By.XPATH, "//input[@value='Recover']").click()
-        driver.implicitly_wait(15)
         try:
             driver.find_element(
                 By.XPATH, "//p[normalize-space()='We couldn't find the username.']")
-        except:
+        except selenium.common.exceptions.NoSuchElementException:
             social_media[1] = True
     except:
         print
     finally:
         driver.quit()
         social_media[4] = True
-
-# not
 
 
 def opportunity(ops, gmail, social_media):
     try:
-        driver = webdriver.Firefox()
+        driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
-        driver.get("https://befilo.com//recover")
+        driver.set_page_load_timeout(60)
+        driver.get("https://myopportunity.com/signin/forgot")
         driver.find_element(
-            By.XPATH, "//input[@name='username']").send_keys(gmail)
+            By.XPATH, "//input[@name='email']").send_keys(gmail)
         driver.find_element(
-            By.XPATH, "//input[@value='Recover']").click()
-        driver.implicitly_wait(15)
-        if driver.find_element(
-                By.XPATH, "//div[@id='account_help']/div/h2").text == "Success":
+            By.XPATH, "//form//button").click()
+        try:
+            driver.find_element(
+                By.XPATH, "//label[normalize-space()='Email is not valid.']")
+        except selenium.common.exceptions.NoSuchElementException:
             social_media[1] = True
     except:
         print
     finally:
         driver.quit()
         social_media[4] = True
-# not
 
 
 def flipboard(ops, gmail, social_media):
     try:
-        driver = webdriver.Firefox()
+        driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
-        driver.get("https://befilo.com//recover")
+        driver.set_page_load_timeout(60)
+        driver.get("https://accounts.flipboard.com/accounts/forgotPassword")
         driver.find_element(
-            By.XPATH, "//input[@name='username']").send_keys(gmail)
+            By.XPATH, "//input[@name='email']").send_keys(gmail)
         driver.find_element(
-            By.XPATH, "//input[@value='Recover']").click()
-        driver.implicitly_wait(15)
-        try:
-            driver.find_element(
-                By.XPATH, "//p[normalize-space()='We couldn't find the username.']")
-        except:
+            By.XPATH, "//form//input[3]").click()
+        if driver.find_element(By.XPATH, "//h2").text == "Success!":
             social_media[1] = True
     except:
         print
@@ -521,25 +508,48 @@ def flipboard(ops, gmail, social_media):
         driver.quit()
         social_media[4] = True
 
-# not
-
 
 def xing(ops, gmail, social_media):
     try:
-        driver = webdriver.Firefox()
+        driver = webdriver.Firefox(options=ops)
         social_media[3] = driver
         driver.implicitly_wait(5)
-        driver.set_page_load_timeout(120)
+        driver.set_page_load_timeout(60)
         driver.get("https://login.xing.com/recovery")
         driver.find_element(
             By.XPATH, "//input[@id='username']").send_keys(gmail)
+        try:
+            driver.find_element(
+                By.XPATH, "//button[@id='consent-accept-button']").click()
+        except:
+            print
         driver.find_element(
             By.XPATH, "//button[@type='submit']").click()
-        driver.implicitly_wait(15)
         try:
             driver.find_element(
                 By.XPATH, "//form/div[2]/div/div/div/p")
-        except:
+        except selenium.common.exceptions.NoSuchElementException:
+            social_media[1] = True
+    except:
+        print
+    finally:
+        driver.quit()
+        social_media[4] = True
+
+
+def quora(ops, gmail, social_media):
+    try:
+        driver = webdriver.Firefox(options=ops)
+        social_media[3] = driver
+        driver.implicitly_wait(2)
+        driver.set_page_load_timeout(60)
+        driver.get("https://www.quora.com/")
+        driver.find_element(
+            By.XPATH, "//input[@id='email']").send_keys(gmail)
+        try:
+            driver.find_element(
+                By.XPATH, "//input[@id='email']/../../div[3]")
+        except selenium.common.exceptions.NoSuchElementException:
             social_media[1] = True
     except:
         print
