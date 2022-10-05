@@ -30,7 +30,7 @@ def search_social_media_by_gmail(gmail):
                      [biztime, False, 'Biztime', None, False],
                      [flickr, False, 'Flickr', None, False],
                      [tumblr, False, 'Tumblr', None, False],
-                     [pinterest, False, 'pinterest', None, False],
+                     [pinterest, False, 'Pinterest', None, False],
                      [zoimas, False, 'Zoimas', None, False],
                      [befilo, False, 'Befilo', None, False],
                      [opportunity, False, 'Opportunity', None, False],
@@ -44,11 +44,21 @@ def search_social_media_by_gmail(gmail):
     for social_media in social_medias:
         threading.Thread(
             target=social_media[0], args=(ops, gmail, social_media), name=social_media[2], daemon=True).start()
+    threading.Thread(target=check_and_kill, args=(gmail, social_medias,),
+                     name="check_and_kill", daemon=True).start()
+    while input(Fore.LIGHTMAGENTA_EX +
+                "[!] If you want to stop using Finder, press enter..."+Fore.RESET+'\n') != "" and len(social_medias) != 0:
+        continue
+    for social_media in social_medias:
+        if social_media[3] != None:
+            social_media[3].quit()
+
+
+def check_and_kill(gmail, social_medias):
     str = gmail
     while len(social_medias) != 0:
         for social_media in social_medias:
             sm = social_media
-            # print(sm)
             if sm[4]:
                 if social_media[1]:
                     str += "-"+(social_media[2].lower())
@@ -57,8 +67,9 @@ def search_social_media_by_gmail(gmail):
                 if social_media[3] != None:
                     social_media[3].quit()
                 social_medias.remove(social_media)
-        time.sleep(0.5)
     io.open("Finder_result.txt", "a").write(str+"\n")
+    print(Fore.LIGHTMAGENTA_EX +
+          "[!] Success Finder, press enter to exit..."+Fore.RESET)
 
 
 def facebook(ops, gmail, social_media):
@@ -249,7 +260,7 @@ def tumblr(ops, gmail, social_media):
         driver.find_element(
             By.XPATH, "//input[@id='onboardingBlogname']").send_keys(gmail.split('@')[0])
         driver.find_element(
-            By.XPATH, "//section//button").click()
+            By.XPATH, "(//button)[6]").click()
         try:
             driver.find_element(
                 By.XPATH, "//div[@class='oFCPF']")
@@ -345,11 +356,9 @@ def zoimas(ops, gmail, social_media):
             By.XPATH, "//input[@name='username']").send_keys(gmail)
         driver.find_element(
             By.XPATH, "//input[@value='Recover']").click()
-        try:
-            driver.find_element(
-                By.XPATH, "//p[normalize-space()='We couldn't find the username.']")
-        except selenium.common.exceptions.NoSuchElementException:
-            social_media[1] = True
+        driver.find_element(
+            By.XPATH, "//input[@name='n']")
+        social_media[1] = True
     except:
         print
     finally:
@@ -368,11 +377,9 @@ def befilo(ops, gmail, social_media):
             By.XPATH, "//input[@name='username']").send_keys(gmail)
         driver.find_element(
             By.XPATH, "//input[@value='Recover']").click()
-        try:
-            driver.find_element(
-                By.XPATH, "//p[normalize-space()='We couldn't find the username.']")
-        except selenium.common.exceptions.NoSuchElementException:
-            social_media[1] = True
+        driver.find_element(
+            By.XPATH, "//input[@name='n']")
+        social_media[1] = True
     except:
         print
     finally:

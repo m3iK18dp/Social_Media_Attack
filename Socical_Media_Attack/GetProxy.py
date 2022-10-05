@@ -22,9 +22,9 @@ try:
 except:
     os.system("pip install colorama")
 url_list = ['https://www.gapo.vn/', 'https://biztime.com.vn/', 'https://accounts.hahalolo.com/sign-in/', 'https://identity.flickr.com/login', 'https://www.tumblr.com/login',
-            'https://zoimas.com/welcome/login', 'https://befilo.com/welcome/login', 'https://desentric.com//guest', 'https://myopportunity.com/signin', 'https://login.xing.com/']
+            'https://zoimas.com/welcome/login', 'https://befilo.com/welcome/login', 'https://desentric.com//guest']
 social_name = ['gapo', 'biztime', 'hahalolo',
-               'flickr', 'tumblr', 'zoimas', 'befilo']
+               'flickr', 'tumblr', 'zoimas', 'befilo', 'desentric']
 # ===============================Get Proxy List============================
 
 

