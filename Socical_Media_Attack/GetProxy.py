@@ -21,17 +21,17 @@ try:
     from colorama import Fore
 except:
     os.system("pip install colorama")
-url_list = ['https://www.facebook.com/login', 'https://www.youtube.com/',
-            'https://www.instagram.com', 'https://www.tiktok.com/login/phone-or-email/email', 'https://twitter.com/i/flow/login', 'https://www.gapo.vn/', 'https://biztime.com.vn/', 'https://accounts.hahalolo.com/sign-in/', 'https://identity.flickr.com/login', 'https://www.tumblr.com/login', 'https://zoimas.com/welcome/login', 'https://befilo.com/welcome/login', 'https://desentric.com//guest', 'https://myopportunity.com/signin', 'https://login.xing.com/']
-social_name = ['facebook', 'youtube', 'instagram',
-               'tiktok', 'twitter', 'gapo', 'biztime', 'hahalolo', 'flickr', 'tumblr', 'zoimas', 'befilo', 'desentric', 'opportunity', 'xing']
+url_list = ['https://www.gapo.vn/', 'https://biztime.com.vn/', 'https://accounts.hahalolo.com/sign-in/', 'https://identity.flickr.com/login', 'https://www.tumblr.com/login',
+            'https://zoimas.com/welcome/login', 'https://befilo.com/welcome/login', 'https://desentric.com//guest', 'https://myopportunity.com/signin', 'https://login.xing.com/']
+social_name = ['gapo', 'biztime', 'hahalolo',
+               'flickr', 'tumblr', 'zoimas', 'befilo']
 # ===============================Get Proxy List============================
 
 
 def getProxies(getProxies, type):
     index_type = []
     if type != None:
-        types = str(type).split("|")
+        types = str(type).split(",")
         for t in types:
             index_type.append(social_name.index(t))
     else:

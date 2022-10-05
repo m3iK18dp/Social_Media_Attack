@@ -1,59 +1,44 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import smtplib
 import threading
 from optparse import *
 import time
-import sys
 import io
 import os
-from turtle import st
 try:
     from selenium import webdriver
 except:
     os.system("pip install selenium")
-from selenium.webdriver.common.proxy import Proxy, ProxyType
-from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.common.by import By
 import selenium.common.exceptions
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.select import Select
-try:
-    import requests
-except:
-    os.system("pip install requests")
 try:
     from colorama import Fore, Back, Style
 except:
     os.system("pip install colorama")
 
 
-def search_social_media_from_gmail(gmail):
+def search_social_media_by_gmail(gmail):
     # [[function, result, social_media_name, webdriver, status]]
-    # social_medias = [[facebook, False, 'Facebook', None, False],
-    #                  [instagram, False, 'Instagram', None, False],
-    #                  [tiktok, False, 'Tiktok', None, False],
-    #                  [twitter, False, 'Twitter', None, False],
-    #                  [youtube, False, 'Youtube', None, False],
-    #                  [hahalolo, False, 'Hahalolo', None, False],
-    #                  [biztime, False, 'Biztime', None, False],
-    #                  [flickr, False, 'Flickr', None, False],
-    #                  [tumblr, False, 'Tumblr', None, False],
-    #                  [pinterest, False, 'pinterest', None, False],
-    #                  [zoimas, False, 'Zoimas', None, False],
-    #                  [befilo, False, 'Befilo', None, False],
-    #                  [opportunity, False, 'Opportunity', None, False],
-    #                  [flipboard, False, 'Flipboard', None, False],
-    #                  [xing, False, 'Xing', None, False],
-    #                  [linkedin, False, 'Linkedin', None, False],
-    #                  [desentric, False, 'Desentric', None, False],
-    #                  [quora, False, 'Quora', None, False]]
-
-    # [reddit, False, 'Reddit', None, False]
-    # [myspace, False, 'Myspace', None, False]
-    #
-    social_medias = [[reddit, False, 'Reddit', None, False]]
+    social_medias = [[facebook, False, 'Facebook', None, False],
+                     [instagram, False, 'Instagram', None, False],
+                     [tiktok, False, 'Tiktok', None, False],
+                     [twitter, False, 'Twitter', None, False],
+                     [youtube, False, 'Youtube', None, False],
+                     [hahalolo, False, 'Hahalolo', None, False],
+                     [biztime, False, 'Biztime', None, False],
+                     [flickr, False, 'Flickr', None, False],
+                     [tumblr, False, 'Tumblr', None, False],
+                     [pinterest, False, 'pinterest', None, False],
+                     [zoimas, False, 'Zoimas', None, False],
+                     [befilo, False, 'Befilo', None, False],
+                     [opportunity, False, 'Opportunity', None, False],
+                     [flipboard, False, 'Flipboard', None, False],
+                     [xing, False, 'Xing', None, False],
+                     [linkedin, False, 'Linkedin', None, False],
+                     [desentric, False, 'Desentric', None, False],
+                     [quora, False, 'Quora', None, False]]
     ops = Options()
     ops.headless = True
     for social_media in social_medias:
@@ -297,58 +282,6 @@ def pinterest(ops, gmail, social_media):
         driver.quit()
         social_media[4] = True
 
-# not
-
-
-def reddit(ops, gmail, social_media):
-    try:
-        driver = webdriver.Firefox()
-        social_media[3] = driver
-        driver.implicitly_wait(5)
-        driver.set_page_load_timeout(60)
-        driver.get("https://www.reddit.com/password")
-        driver.find_element(
-            By.XPATH, "//input[@id='email']").send_keys(gmail)
-        driver.find_element(
-            By.XPATH, "//form//button").click()
-        driver.implicitly_wait(10)
-        driver.find_element(
-            By.XPATH, "//span[@id='password-error']")
-        social_media[1] = True
-    except:
-        print
-    finally:
-        driver.quit()
-        social_media[4] = True
-# not
-
-
-def myspace(ops, gmail, social_media):
-    try:
-        driver = webdriver.Firefox()
-        social_media[3] = driver
-        driver.implicitly_wait(5)
-        driver.set_page_load_timeout(60)
-        driver.get("https://myspace.com/signup")
-        driver.find_element(
-            By.XPATH, "//button[@class='emaillogin massive']").click()
-        driver.find_element(
-            By.XPATH, "//input[@id='signupEmailEmail']").send_keys(gmail)
-        driver.find_element(
-            By.XPATH, "//input[@id='signupEmailPassword']").send_keys(gmail)
-        time.sleep(2)
-        driver.implicitly_wait(10)
-        try:
-            driver.find_element(
-                By.XPATH, "//input[@id='signupEmailEmail']/../p/div/div[2]")
-        except selenium.common.exceptions.NoSuchElementException:
-            social_media[1] = True
-    except:
-        print
-    finally:
-        driver.quit()
-        social_media[4] = True
-
 
 def linkedin(ops, gmail, social_media):
     try:
@@ -537,6 +470,3 @@ def quora(ops, gmail, social_media):
     finally:
         driver.quit()
         social_media[4] = True
-
-
-search_social_media_from_gmail("pk4824829@gmail.com")
