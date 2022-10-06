@@ -79,10 +79,12 @@ def getProxies(getProxies, type):
 
 def getProxies_switcher(index_type, getProxies):
     try:
-        io.open("proxy_list_switcher.txt", "a+")
-        get_str = io.open("proxy_list_switcher.txt", "r").readlines()
-        for i in range(1, len(get_str)):
-            check_proxy(get_str[i].split(",")[0], index_type, getProxies)
+        while True:
+            io.open("proxy_list_switcher.txt", "a+")
+            get_str = io.open("proxy_list_switcher.txt", "r").readlines()
+            for i in range(1, len(get_str)):
+                check_proxy(get_str[i].split(",")[0], index_type, getProxies)
+            time.time(300)
     except:
         print(Fore.LIGHTMAGENTA_EX +
               "[!] Error get proxy from switcher"+Fore.RESET)
