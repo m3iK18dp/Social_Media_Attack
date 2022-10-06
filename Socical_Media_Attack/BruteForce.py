@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# ============Author: m3iK18dp=============
+# ===============2022/10===================
 import threading
 from optparse import *
 import time
